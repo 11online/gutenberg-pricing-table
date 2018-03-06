@@ -23,11 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 function gutenberg_pricing_table_block_assets() {
 
 	wp_enqueue_style(
-		'gutenberg_pricing_table-bulma-css', // Handle.
-		plugins_url( 'bulma.min.css', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
-		array( 'wp-edit-blocks'  )// Dependencies, defined above.
-	); // End function gutenberg_pricing_table_cgb_block_assets().
-	wp_enqueue_style(
 		'gutenberg_pricing_table-bulma-pricing-table-css', // Handle.
 		plugins_url( 'bulma-pricing-table.min.css', dirname( __FILE__ ) ), // Block.build.js: We register the block here. Built with Webpack.
 		array( 'wp-edit-blocks'  )// Dependencies, defined above.
