@@ -19,7 +19,6 @@ const { Component } = wp.element;
 const InspectorControls = wp.blocks.InspectorControls;
 const ColorPalette = wp.blocks.ColorPalette;
 
-
 // class EditorComponent extends Component {
 //
 //
@@ -235,10 +234,15 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	title: __( 'Pricing Table' ), // Block title.
 	icon: 'editor-table', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
 	category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
-	attributes: {},
 	keywords: [
 		__( 'Pricing Table' )
 	],
+	attributes: {
+		pricingItems: {
+			type: 'number',
+			default: 0,
+		},
+	},
 
 	/**
 	 * The edit function describes the structure of your block in the context of the editor.
@@ -248,129 +252,57 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
 	 */
-	edit: function( { attributes, className} ) {
+	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
+
+		let pricingItems = [];
+
+		for (let i = 1; i <= attributes.pricingItems; i++) {
+			pricingItems.push(
+				<div className="pricing-items" key={i}>
+					<div className="pricing-item">TEST</div>
+				</div>
+			)
+		}
+
+		const addRemovePricingItem = (
+			<div style={{textAlign: 'right'}}>
+				{ __("Add or Remove Item:") }&nbsp;
+				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
+					const newPricingItems = attributes.pricingItems+1;
+					setAttributes({pricingItems: newPricingItems});
+				}}><span className="dashicons dashicons-plus"></span></button>
+				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
+					const newPricingItems = attributes.pricingItems-1;
+					let obj = {};
+					obj['pricingItems'] = newPricingItems;
+					obj['pricing_title_' + attributes.pricingItems] = "";
+					obj['pricing_amount_' + attributes.pricingItems] = null;
+					obj['pricing_per_' + attributes.pricingItems] = "";
+					setAttributes(obj);
+				}}><span className="dashicons dashicons-minus"></span></button>
+			</div>
+		);
 
 		return (
-			<div class="pricing-table">
-			  <div class="pricing-plan">
-			    <div class="plan-header">Starter</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>20</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">20GB Storage</div>
-			      <div class="plan-item">100 Domains</div>
-			      <div class="plan-item">-</div>
-			      <div class="plan-item">-</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth" disabled="disabled">Current plan</button>
-			    </div>
-			  </div>
-
-			  <div class="pricing-plan is-warning">
-			    <div class="plan-header">Startups</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>40</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">20GB Storage</div>
-			      <div class="plan-item">25 Domains</div>
-			      <div class="plan-item">1TB Bandwidth</div>
-			      <div class="plan-item">-</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth">Choose</button>
-			    </div>
-			  </div>
-
-			  <div class="pricing-plan is-active">
-			    <div class="plan-header">Growing Team</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>60</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">200GB Storage</div>
-			      <div class="plan-item">50 Domains</div>
-			      <div class="plan-item">1TB Bandwidth</div>
-			      <div class="plan-item">100 Email Boxes</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth">Choose</button>
-			    </div>
-			  </div>
-
-			  <div class="pricing-plan is-danger">
-			    <div class="plan-header">Enterprise</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>100</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">2TB Storage</div>
-			      <div class="plan-item">100 Domains</div>
-			      <div class="plan-item">1TB Bandwidth</div>
-			      <div class="plan-item">1000 Email Boxes</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth">Choose</button>
-			    </div>
-			  </div>
+			<div className="pricing-table">
+			{pricingItems}
+				{ focus ?
+					<div>
+						{addRemovePricingItem}
+					</div>
+				: null }
 			</div>
 		)
+
 	},
 
 
-	save: function({ attributes, className }) {
+
+	save: function(props) {
 
 		return (
-			<div class="pricing-table">
-			  <div class="pricing-plan">
-			    <div class="plan-header">Starter</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>20</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">20GB Storage</div>
-			      <div class="plan-item">100 Domains</div>
-			      <div class="plan-item">-</div>
-			      <div class="plan-item">-</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth" disabled="disabled">Current plan</button>
-			    </div>
-			  </div>
-
-			  <div class="pricing-plan is-warning">
-			    <div class="plan-header">Startups</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>40</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">20GB Storage</div>
-			      <div class="plan-item">25 Domains</div>
-			      <div class="plan-item">1TB Bandwidth</div>
-			      <div class="plan-item">-</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth">Choose</button>
-			    </div>
-			  </div>
-
-			  <div class="pricing-plan is-active">
-			    <div class="plan-header">Growing Team</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>60</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">200GB Storage</div>
-			      <div class="plan-item">50 Domains</div>
-			      <div class="plan-item">1TB Bandwidth</div>
-			      <div class="plan-item">100 Email Boxes</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth">Choose</button>
-			    </div>
-			  </div>
-
-			  <div class="pricing-plan is-danger">
-			    <div class="plan-header">Enterprise</div>
-			    <div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>100</span>/month</div>
-			    <div class="plan-items">
-			      <div class="plan-item">2TB Storage</div>
-			      <div class="plan-item">100 Domains</div>
-			      <div class="plan-item">1TB Bandwidth</div>
-			      <div class="plan-item">1000 Email Boxes</div>
-			    </div>
-			    <div class="plan-footer">
-			      <button class="button is-fullwidth">Choose</button>
-			    </div>
-			  </div>
+			<div>
+				TEST
 			</div>
 		);
 	},
