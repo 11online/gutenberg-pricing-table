@@ -258,8 +258,15 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 
 		for (let i = 1; i <= attributes.pricingItems; i++) {
 			pricingItems.push(
-				<div className="pricing-items" key={i}>
-					<div className="pricing-item">TEST</div>
+				<div className="pricing-plan" key={i}>
+					<div className="plan-header">TEST</div>
+					<div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>20</span>/test</div>
+					<div className="plan-items">
+						<div className="plan-item">TEST</div>
+					</div>
+					<div class="plan-footer">
+						<button class="button is-fullwidth" disabled="disabled">Button</button>
+					</div>
 				</div>
 			)
 		}
@@ -284,8 +291,10 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 		);
 
 		return (
-			<div className="pricing-table">
-			{pricingItems}
+			<div>
+				<div className="pricing-table">
+					{pricingItems}
+				</div>
 				{ focus ?
 					<div>
 						{addRemovePricingItem}
