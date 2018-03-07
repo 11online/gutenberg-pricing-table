@@ -10,10 +10,17 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-.wp-block-cgb-block-gutenberg-pop-up {
-  background: #bada55;
-  border: 0.2rem solid #292929;
-  color: #292929;
-  margin: 0 auto;
-  max-width: 740px;
-  padding: 2rem; }
+.wp-block-pricing-table .pricingItem-controls-sm {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+  .wp-block-pricing-table .pricingItem-controls-sm .blocks-color-palette {
+    width: 100%; }
+  .wp-block-pricing-table .pricingItem-controls-sm .blocks-base-control {
+    width: 50%;
+    padding: 0 5px;
+    margin-bottom: 10px; }
+  .wp-block-pricing-table .pricingItem-controls-sm .blocks-range-control {
+    width: 100%;
+    margin-bottom: 40px; }

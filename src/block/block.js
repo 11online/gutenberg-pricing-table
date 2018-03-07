@@ -10,7 +10,7 @@ import './style.scss';
 import './editor.scss';
 
 const { __ } = wp.i18n; // Import __() from wp.i18n
-const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
+const { registerBlockType, PlainText } = wp.blocks; // Import registerBlockType() from wp.blocks
 const TextControl = wp.components.TextControl;
 const SelectControl = wp.components.SelectControl;
 const RangeControl = wp.components.RangeControl;
@@ -18,6 +18,7 @@ const IconButton = wp.components.IconButton;
 const { Component } = wp.element;
 const InspectorControls = wp.blocks.InspectorControls;
 const ColorPalette = wp.blocks.ColorPalette;
+const Dropdown = wp.components.Dropdown;
 
 // class EditorComponent extends Component {
 //
@@ -260,8 +261,76 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 				{ attributes.pricingItems.map( (pricingItem, i) => {
 					return (
 						<div className={"pricing-plan "+i} key={i}>
-							<div className="plan-header">{pricingItem.title}</div>
-							<div className="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">{pricingItem.currency}</span>{pricingItem.amount}</span>{pricingItem.per}</div>
+							<Dropdown
+								className="pricingItem-controls-button"
+								contentClassName="pricingItem-controls"
+								position="bottom right"
+								renderToggle={ ( { isOpen, onToggle } ) => (
+									<div style={{textAlign: 'right'}}>
+										<button style={{display: "inline-block", padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
+											<span className="dashicons dashicons-admin-generic"></span>
+										</button>
+									</div>
+								) }
+								renderContent={ () => (
+									<div>
+										<TextControl
+											label={ __("Title:") }
+											value={pricingItem.title}
+											 onChange={ value => {
+												 let newPricingItems = [ ...attributes.pricingItems ]
+												 newPricingItems[i].title = value
+												 setAttributes( { pricingItems: newPricingItems } )
+											 } }
+											placeholder={ __("Title") }
+										/>
+										<div className="pricingItems-controls-sm">
+											<TextControl
+												style={{textAlign: 'center'}}
+												label={ __("Amount:") }
+												value={pricingItem.amount}
+												 onChange={ value => {
+													 let newPricingItems = [ ...attributes.pricingItems ]
+													 newPricingItems[i].amount = value
+													 setAttributes( { pricingItems: newPricingItems } )
+												 } }
+												placeholder={ __("Amount") }
+											/>
+											<TextControl
+												style={{textAlign: 'center'}}
+												label={ __("Amount Subtext:") }
+												value={pricingItem.per}
+												 onChange={ value => {
+													 let newPricingItems = [ ...attributes.pricingItems ]
+													 newPricingItems[i].per = value
+													 setAttributes( { pricingItems: newPricingItems } )
+												 } }
+												placeholder={ __("/") }
+											/>
+											<ColorPalette
+												value={pricingItem.color}
+												onChange={ (value) => {
+													let newPricingItems = [ ...attributes.pricingItems ]
+													newPricingItems[i].color = value
+													setAttributes( { pricingItems: newPricingItems } )
+												} }
+											/>
+										</div>
+									</div>
+								) }
+							/>
+							<div className="plan-header">
+								{pricingItem.title}
+							</div>
+							<div className="plan-price">
+								<span className="plan-price-amount" style={{color: pricingItem.color}}>
+									<span className="plan-price-currency">
+										{pricingItem.currency}
+									</span>
+									{pricingItem.amount}
+								</span>
+								{pricingItem.per}
+							</div>
 							<div className="plan-items">
 								{
 									pricingItem.planItems.map( (planItem, j) => {
@@ -279,8 +348,8 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								}}><span className="dashicons dashicons-plus"></span></ button>
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
 							</div>
-							<div class="plan-footer">
-								<button class="button is-fullwidth" disabled="disabled">test</button>
+							<div className="plan-footer">
+								<button className="button is-fullwidth">test</button>
 							</div>
 						</div>
 					)
@@ -305,18 +374,20 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
 					const newPricingItems = [ ...attributes.pricingItems ];
 					let obj = {
-						title: 'test',
-						amount: 20,
+						title: '',
+						amount: '0',
 						currency: '$',
-						per: '/month',
+						per: '',
 						planItems: [
 							{
-								text: 'TEST',
+								text: '',
 							},
 						],
 						button: {
-							text: 'test',
+							text: 'Choose',
+							link: '',
 						},
+						color: '#444'
 					}
 					newPricingItems.push(obj)
 					console.log('add')
@@ -334,7 +405,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 		);
 
 		return (
-			<div>
+			<div className='wp-block-pricing-table'>
 				{renderPricingTable}
 				{ focus ?
 					<div>
@@ -348,11 +419,42 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 
 
 
-	save: function(props) {
+	save: function({ attributes, setAttributes, focus, setFocus, className }) {
 
 		return (
-			<div>
-				TEST
+			<div className="pricing-table">
+				{ attributes.pricingItems.map( (pricingItem, i) => {
+					return (
+						<div className={"pricing-plan "+i} key={i}>
+							<div className="plan-header">
+								{pricingItem.title}
+							</div>
+							<div className="plan-price">
+								<span className="plan-price-amount" style={{color: pricingItem.color}}>
+									<span className="plan-price-currency">
+										{pricingItem.currency}
+									</span>
+									{pricingItem.amount}
+								</span>
+								{pricingItem.per}
+							</div>
+							<div className="plan-items">
+								{
+									pricingItem.planItems.map( (planItem, j) => {
+										return (
+											<div className={"plan-item "+j} key={j}>
+												{planItem.text}
+											</div>
+										)
+									})
+								}
+							</div>
+							<div className="plan-footer">
+								<button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>test</button>
+							</div>
+						</div>
+					)
+				})}
 			</div>
 		);
 	},
