@@ -285,6 +285,20 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 											placeholder={ __("Title") }
 										/>
 										<div className="pricingItems-controls-sm">
+											<SelectControl
+												label={ __("Symbol:") }
+												value={ pricingItem.currency }
+												options={[
+																		{ value: '$', label: '$' },
+																		{ value: '£', label: '£' },
+																		{ value: '€', label: '€' },
+																	]}
+												onChange={ value => {
+ 												 let newPricingItems = [ ...attributes.pricingItems ]
+ 												 newPricingItems[i].currency = value
+ 												 setAttributes( { pricingItems: newPricingItems } )
+ 											 } }
+											/>
 											<TextControl
 												style={{textAlign: 'center'}}
 												label={ __("Amount:") }
