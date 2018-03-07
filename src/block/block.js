@@ -239,8 +239,8 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	],
 	attributes: {
 		pricingItems: {
-			type: 'number',
-			default: 0,
+			type: 'array',
+			default: [],
 		},
 	},
 
@@ -254,53 +254,73 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	 */
 	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
 
-		let pricingItems = [];
+		const renderPricingTable = (
+			<div className="pricing-table">
+				{ attributes.pricingItems.map( (pricingItem, i) => {
+					return (
+						<div className={"pricing-plan "+i} key={i}>
+							<div className="plan-header">TEST</div>
+							<div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>20</span>/test</div>
+							<div className="plan-items">
+								<div className="plan-item">TEST</div>
+							</div>
+							<div style={{textAlign: 'right'}}>
+								<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
+									console.log('test')
+								}}><span className="dashicons dashicons-plus"></span></ button>
+								<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
+							</div>
+							<div class="plan-footer">
+								<button class="button is-fullwidth" disabled="disabled">Button</button>
+							</div>
+						</div>
+					)
+				})}
+			</div>
+		)
 
-		for (let i = 1; i <= attributes.pricingItems; i++) {
-			pricingItems.push(
-				<div className="pricing-plan" key={i}>
-					<div className="plan-header">TEST</div>
-					<div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>20</span>/test</div>
-					<div className="plan-items">
-						<div className="plan-item">TEST</div>
-					</div>
-					<div class="plan-footer">
-						<button class="button is-fullwidth" disabled="disabled">Button</button>
-					</div>
-				</div>
-			)
-		}
+		// const addRemovePlanItem = (
+		// 	<div style={{textAlign: 'right'}}>
+		// 		<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={(event) => {
+		// 			console.log(event)
+		// 			let key = 'test'
+		// 			let obj = {}
+		// 		}}><span className="dashicons dashicons-plus"></span></ button>
+		// 		<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
+		// 	</div>
+		// )
 
 		const addRemovePricingItem = (
 			<div style={{textAlign: 'right'}}>
 				{ __("Add or Remove Item:") }&nbsp;
 				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-					const newPricingItems = attributes.pricingItems+1;
-					setAttributes({pricingItems: newPricingItems});
+					console.log('add')
+					console.log(attributes.pricingItems)
+					const newPricingItems = [ ...attributes.pricingItems ];
+					let obj = {}
+					obj['pricingItem'+(newPricingItems.length+1)] = {title: 'test'}
+					newPricingItems.push(obj)
+					setAttributes( { pricingItems: newPricingItems } );
 				}}><span className="dashicons dashicons-plus"></span></button>
 				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-					const newPricingItems = attributes.pricingItems-1;
-					let obj = {};
-					obj['pricingItems'] = newPricingItems;
-					obj['pricing_title_' + attributes.pricingItems] = "";
-					obj['pricing_amount_' + attributes.pricingItems] = null;
-					obj['pricing_per_' + attributes.pricingItems] = "";
-					setAttributes(obj);
+					console.log('delete')
+					console.log(attributes.pricingItems)
+					let newPricingItems = [ ...attributes.pricingItems ]
+					newPricingItems.pop()
+					setAttributes( {pricingItems: newPricingItems})
 				}}><span className="dashicons dashicons-minus"></span></button>
 			</div>
 		);
 
 		return (
 			<div>
-				<div className="pricing-table">
-					{pricingItems}
-				</div>
+				{renderPricingTable}
 				{ focus ?
 					<div>
 						{addRemovePricingItem}
 					</div>
 				: null }
-			</div>
+		 </div>
 		)
 
 	},
