@@ -252,6 +252,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	 *
 	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
 	 */
+
 	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
 
 		const renderPricingTable = (
@@ -259,10 +260,18 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 				{ attributes.pricingItems.map( (pricingItem, i) => {
 					return (
 						<div className={"pricing-plan "+i} key={i}>
-							<div className="plan-header">TEST</div>
-							<div class="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">$</span>20</span>/test</div>
+							<div className="plan-header">{pricingItem.title}</div>
+							<div className="plan-price"><span class="plan-price-amount"><span class="plan-price-currency">{pricingItem.currency}</span>{pricingItem.amount}</span>{pricingItem.per}</div>
 							<div className="plan-items">
-								<div className="plan-item">TEST</div>
+								{
+									pricingItem.planItems.map( (planItem, j) => {
+										return (
+											<div className={"plan-item "+j} key={j}>
+												{planItem.text}
+											</div>
+										)
+									})
+								}
 							</div>
 							<div style={{textAlign: 'right'}}>
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
@@ -271,7 +280,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
 							</div>
 							<div class="plan-footer">
-								<button class="button is-fullwidth" disabled="disabled">Button</button>
+								<button class="button is-fullwidth" disabled="disabled">test</button>
 							</div>
 						</div>
 					)
@@ -294,12 +303,24 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			<div style={{textAlign: 'right'}}>
 				{ __("Add or Remove Item:") }&nbsp;
 				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-					console.log('add')
-					console.log(attributes.pricingItems)
 					const newPricingItems = [ ...attributes.pricingItems ];
-					let obj = {}
-					obj['pricingItem'+(newPricingItems.length+1)] = {title: 'test'}
+					let obj = {
+						title: 'test',
+						amount: 20,
+						currency: '$',
+						per: '/month',
+						planItems: [
+							{
+								text: 'TEST',
+							},
+						],
+						button: {
+							text: 'test',
+						},
+					}
 					newPricingItems.push(obj)
+					console.log('add')
+					console.log(newPricingItems)
 					setAttributes( { pricingItems: newPricingItems } );
 				}}><span className="dashicons dashicons-plus"></span></button>
 				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
