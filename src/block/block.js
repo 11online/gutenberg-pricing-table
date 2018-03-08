@@ -156,7 +156,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										return (
 											<div className={"plan-item "+j} key={j}>
 												<PlainText
-													style={{ backgroundColor: "rgba(0,0,0,0)", textAlign: "center", width: "50%"}}
+													style={{ backgroundColor: "rgba(0,0,0,0)", textAlign: "center"}}
 													value={planItem.text}
 													onChange={(value) => {
 														let newPlanItem = { text: value }
@@ -176,7 +176,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								{ __("Add or Remove Detail:") }&nbsp;
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
 									onClick={() => {
-										let newPlanItem = { text: "Detail" }
+										let newPlanItem = { text: "Detail Text" }
 										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
 										newPlanItems.push(newPlanItem)
 										let newPricingItems = [ ...attributes.pricingItems ]
