@@ -69,7 +69,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									</div>
 								) }
 								renderContent={ () => (
-									<div>
+									<div style={{ padding: "6px" }}>
 										<TextControl
 											label={ __("Title:") }
 											value={pricingItem.title}
@@ -80,9 +80,9 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 											 } }
 											placeholder={ __("Title") }
 										/>
-										<div className="pricingItems-controls-sm">
+										<div className="pricingItems-controls-sm" style={{display: "flex", justifyContent: "space-between" }}>
 											<SelectControl
-												label={ __("Symbol:") }
+												style={{ display: "inline-block", width: "auto"}}
 												value={ pricingItem.currency }
 												options={[
 																		{ value: '$', label: '$' },
@@ -96,8 +96,8 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
  											 } }
 											/>
 											<TextControl
-												style={{textAlign: 'center'}}
-												label={ __("Amount:") }
+												style={{textAlign: 'center', display: "inline-block", width: "50px" }}
+												label={ __("Price:") }
 												value={pricingItem.amount}
 												 onChange={ value => {
 													 let newPricingItems = [ ...attributes.pricingItems ]
@@ -107,25 +107,25 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 												placeholder={ __("Amount") }
 											/>
 											<TextControl
-												style={{textAlign: 'center'}}
-												label={ __("Amount Subtext:") }
+												style={{textAlign: 'center', display: "inline-block", width: "100px" }}
+												label={ __("Subtext:") }
 												value={pricingItem.per}
 												 onChange={ value => {
 													 let newPricingItems = [ ...attributes.pricingItems ]
 													 newPricingItems[i].per = value
 													 setAttributes( { pricingItems: newPricingItems } )
 												 } }
-												placeholder={ __("Amount Subtext") }
-											/>
-											<ColorPalette
-												value={pricingItem.color}
-												onChange={ (value) => {
-													let newPricingItems = [ ...attributes.pricingItems ]
-													newPricingItems[i].color = value
-													setAttributes( { pricingItems: newPricingItems } )
-												} }
+												placeholder={ __("/") }
 											/>
 										</div>
+										<ColorPalette
+											value={pricingItem.color}
+											onChange={ (value) => {
+												let newPricingItems = [ ...attributes.pricingItems ]
+												newPricingItems[i].color = value
+												setAttributes( { pricingItems: newPricingItems } )
+											} }
+										/>
 									</div>
 								) }
 							/>
@@ -139,7 +139,9 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									</span>
 									{pricingItem.amount}
 								</span>
-								{pricingItem.per}
+								{pricingItem.per ? (
+									"/"+pricingItem.per
+								): null }
 							</div>
 							<div className="plan-items">
 								{
