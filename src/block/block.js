@@ -47,23 +47,13 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			type: 'array',
 			default: [],
 		},
-		format: 'pricing-table',
+		// format: 'pricing-table',
 	},
-
-	 // <PlainText
-		//  style={{ backgroundColor: "rgba(0,0,0,0)", textAlign: "center", width: "50%"}}
-		//  value={pricingItem.title}
-		// 	onChange={ value => {
-		// 		let newPricingItems = [ ...attributes.pricingItems ]
-		// 		newPricingItems[i].title = value
-		// 		setAttributes( { pricingItems: newPricingItems } )
-		// 	} }
-	 // />
 
 	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
 
 		const renderPricingTable = (
-			<div className='pricing-table'>
+			<div className={'pricing-table'}>
 				{ attributes.pricingItems.map( (pricingItem, i) => {
 					return (
 						<div className={"pricing-plan "+i} key={i}>
@@ -299,22 +289,22 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			</div>
 		);
 
-		const Controls = focus ? (
-			<InspectorControls>
-				<SelectControl
-						label={ __("Format: ") }
-						value={ attributes.format }
-						options={[
-							{ value: 'pricing-table', label: 'Regular' },
-							{ value: 'pricing-table is-comparative', label: 'Comparative' },
-						]}
-						onChange={ (value) => setAttributes( { orientation: value } ) }
-					/>
-			</InspectorControls>
-		) : null
+		// const Controls = focus ? (
+		// 	<InspectorControls>
+		// 		<SelectControl
+		// 				label={ __("Format: ") }
+		// 				value={ attributes.format }
+		// 				options={[
+		// 					{ value: 'pricing-table', label: 'Regular' },
+		// 					{ value: 'pricing-table is-comparative', label: 'Comparative' },
+		// 				]}
+		// 				onChange={ (value) => setAttributes( { orientation: value } ) }
+		// 			/>
+		// 	</InspectorControls>
+		// ) : null
 
 		return [
-			Controls,
+			// Controls,
 			(
 				<div className='wp-block-pricing-table'>
 					{renderPricingTable}
