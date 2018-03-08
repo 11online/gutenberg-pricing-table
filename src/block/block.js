@@ -19,6 +19,7 @@ const { Component } = wp.element;
 const InspectorControls = wp.blocks.InspectorControls;
 const ColorPalette = wp.blocks.ColorPalette;
 const Dropdown = wp.components.Dropdown;
+const ToggleControl = wp.components.ToggleControl;
 
 // class EditorComponent extends Component {
 //
@@ -319,7 +320,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 													 newPricingItems[i].per = value
 													 setAttributes( { pricingItems: newPricingItems } )
 												 } }
-												placeholder={ __("/") }
+												placeholder={ __("Amount Subtext") }
 											/>
 											<ColorPalette
 												value={pricingItem.color}
@@ -363,7 +364,43 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
 							</div>
 							<div className="plan-footer">
-								<button className="button is-fullwidth">test</button>
+								<ToggleControl
+									label={ __("Button?") }
+									checked={ !! pricingItem.button.hasButton }
+									onChange={ value => {
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].button.hasButton = ! pricingItem.button.hasButton
+										setAttributes( { pricingItems: newPricingItems } )
+									} }
+								/>
+								{
+									pricingItem.button.hasButton ? (
+										<div>
+											<button className="button is-fullwidth" style={{width: "100px", backgroundColor: pricingItem.color}}>
+												<PlainText
+													style={{width: "75px", color: "white", backgroundColor: "rgba(0,0,0,0)"}}
+													value={pricingItem.button.text}
+													onChange={ (value) => {
+														let newPricingItems = [ ...attributes.pricingItems ]
+														newPricingItems[i].button.text = value
+														setAttributes( { pricingItems: newPricingItems } )
+													} }
+												/>
+											</button>
+											<TextControl
+												style={{textAlign: 'center'}}
+												label={ __("Button Link:") }
+												value={pricingItem.button.link}
+												 onChange={ value => {
+													 let newPricingItems = [ ...attributes.pricingItems ]
+													 newPricingItems[i].button.link = value
+													 setAttributes( { pricingItems: newPricingItems } )
+												 } }
+												placeholder={ __("Destination URL") }
+											/>
+										</div>
+									) : null
+								}
 							</div>
 						</div>
 					)
@@ -392,12 +429,9 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						amount: '0',
 						currency: '$',
 						per: '',
-						planItems: [
-							{
-								text: '',
-							},
-						],
+						planItems: [],
 						button: {
+							hasButton: true,
 							text: 'Choose',
 							link: '',
 						},
@@ -464,7 +498,11 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								}
 							</div>
 							<div className="plan-footer">
-								<button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>test</button>
+								{
+									pricingItem.button.hasButton ? (
+										<button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}} onClick={ () => window.open(pricingItem.button.link)}>{pricingItem.button.text}</button>
+									) : null
+								}
 							</div>
 						</div>
 					)
