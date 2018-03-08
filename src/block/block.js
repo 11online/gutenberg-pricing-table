@@ -358,6 +358,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								}
 							</div>
 							<div style={{textAlign: 'right'}}>
+								{ __("Add or Remove Detail:") }&nbsp;
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
 									console.log('test')
 								}}><span className="dashicons dashicons-plus"></span></ button>
@@ -376,27 +377,36 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								{
 									pricingItem.button.hasButton ? (
 										<div>
-											<button className="button is-fullwidth" style={{width: "100px", backgroundColor: pricingItem.color}}>
-												<PlainText
-													style={{width: "75px", color: "white", backgroundColor: "rgba(0,0,0,0)"}}
-													value={pricingItem.button.text}
-													onChange={ (value) => {
-														let newPricingItems = [ ...attributes.pricingItems ]
-														newPricingItems[i].button.text = value
-														setAttributes( { pricingItems: newPricingItems } )
-													} }
-												/>
-											</button>
-											<TextControl
-												style={{textAlign: 'center'}}
-												label={ __("Button Link:") }
-												value={pricingItem.button.link}
-												 onChange={ value => {
-													 let newPricingItems = [ ...attributes.pricingItems ]
-													 newPricingItems[i].button.link = value
-													 setAttributes( { pricingItems: newPricingItems } )
-												 } }
-												placeholder={ __("Destination URL") }
+											<Dropdown
+												className="pricingItem-controls-button"
+												contentClassName="pricingItem-controls"
+												renderToggle={ ( { isOpen, onToggle } ) => (
+													<button className="button is-fullwidth" style={{width: "100px", color: "white", backgroundColor: pricingItem.color}}  onClick={ onToggle }>
+														{ pricingItem.button.text }
+													</button>
+												) }
+												renderContent={ () => (
+													<div>
+														<TextControl
+															value={pricingItem.button.text}
+															 onChange={ value => {
+																 let newPricingItems = [ ...attributes.pricingItems ]
+																 newPricingItems[i].button.text = value
+																 setAttributes( { pricingItems: newPricingItems } )
+															 } }
+															placeholder={ __("Button Text") }
+														/>
+														<TextControl
+															value={pricingItem.button.link}
+															 onChange={ value => {
+																 let newPricingItems = [ ...attributes.pricingItems ]
+																 newPricingItems[i].button.link = value
+																 setAttributes( { pricingItems: newPricingItems } )
+															 } }
+															placeholder={ __("Destination Path") }
+														/>
+													</div>
+												)}
 											/>
 										</div>
 									) : null
@@ -408,16 +418,16 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			</div>
 		)
 
-		// const addRemovePlanItem = (
-		// 	<div style={{textAlign: 'right'}}>
-		// 		<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={(event) => {
-		// 			console.log(event)
-		// 			let key = 'test'
-		// 			let obj = {}
-		// 		}}><span className="dashicons dashicons-plus"></span></ button>
-		// 		<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
-		// 	</div>
-		// )
+		const addRemovePlanItem = (
+			<div style={{textAlign: 'right'}}>
+				<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={(event) => {
+					console.log(event)
+					let key = 'test'
+					let obj = {}
+				}}><span className="dashicons dashicons-plus"></span></ button>
+				<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
+			</div>
+		)
 
 		const addRemovePricingItem = (
 			<div style={{textAlign: 'right'}}>
