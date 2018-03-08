@@ -21,203 +21,6 @@ const ColorPalette = wp.blocks.ColorPalette;
 const Dropdown = wp.components.Dropdown;
 const ToggleControl = wp.components.ToggleControl;
 
-// class EditorComponent extends Component {
-//
-//
-// 	constructor() {
-// 		super( ...arguments );
-// 		this.state = {
-// 			isEditing: false,
-// 			colorSelector: 'titleColor',
-// 		}
-// 	}
-//
-// 	componentDidMount() {
-// 		const randomKey = "myModal" + Math.floor(Math.random() * 1000);
-// 		this.props.setAttributes({randomKey: randomKey});
-// 	}
-//
-// 	handleChildClick(e) {
-// 		e.stopPropagation();
-// 		this.setState( { colorSelector: e.target.className } );
-// }
-//
-// 	render() {
-// 		const { attributes, setAttributes, className, focus} = this.props;
-//
-// 		const styles = {
-// 			previewBox: {
-// 				titleBackgroundColor: {
-// 					backgroundColor: attributes.titleBackgroundColor,
-// 					borderBottom: '1px solid #e5e5e5',
-// 					height: "40%",
-// 					borderRadius: `${attributes.borderRadius}px ${attributes.borderRadius}px 0 0`,
-// 				},
-// 				titleColor: {
-// 					color: attributes.titleColor,
-// 					width: "50%",
-// 					padding: "2px",
-// 				},
-// 				textColor: {
-// 					color: attributes.textColor,
-// 				},
-// 			},
-// 			modal: {
-// 				modalContent: {
-// 					backgroundColor: attributes.textBackgroundColor,
-// 					color: attributes.textColor,
-// 					borderRadius: attributes.borderRadius,
-// 				},
-// 				modalHeader: {
-// 					backgroundColor: attributes.titleBackgroundColor,
-// 					borderRadius: `${attributes.borderRadius}px ${attributes.borderRadius}px 0 0`,
-// 				},
-// 				modalTitle: {
-// 					color: attributes.titleColor,
-// 				},
-// 			},
-// 		}
-//
-// 		const controls = focus ?
-// 		 (
-// 			 <InspectorControls>
-// 				<SelectControl
-// 					label={ __("Size: ") }
-// 					value={ attributes.size }
-// 					options={[
-// 						{ value: ' modal-lg', label: 'Large' },
-// 						{ value: '', label: 'Medium' },
-// 						{ value: ' modal-sm', label: 'Small' },
-// 					]}
-// 					onChange={ (value) => setAttributes( { size: value } ) }
-// 				/>
-// 				<SelectControl
-// 					label={ __("Animation: ") }
-// 					value={ attributes.animation }
-// 					options={[
-// 						{ value: 'fadeIn', label: __("Fade In") },
-// 						{ value: 'bounce', label: __("Bounce") },
-// 						{ value: 'shake', label: __("Shake") },
-// 						{ value: 'flipBounceYIn', label: __("Flip") },
-// 						{ value: 'shrinkIn', label: __("Zoom Out") },
-// 						{ value: 'expandIn', label: __("Zoom In") },
-// 						{ value: 'slideDownIn', label: __("Slide In") },
-// 						{ value: 'perspectiveLeftIn', label: __("Perspective In") },
-// 						{ value: 'pulse', label: __("Pulse") },
-// 						{ value: 'swing', label: __("Swing") },
-// 						{ value: 'tada', label: __("Tada") }
-// 					]}
-// 					onChange={ (value) => setAttributes( { animation: value } ) }
-// 				/>
-// 				<SelectControl
-// 					label={ __("Color: ") }
-// 					value={ this.state.colorSelector }
-// 					options={[
-// 						{ value: 'titleColor', label: __("Title") },
-// 						{ value: 'titleBackgroundColor', label: __("Title Background") },
-// 						{ value: 'textColor', label: __("Content") },
-// 						{ value: 'textBackgroundColor', label: __("Content Background") },
-// 					]}
-// 					onChange={ (value) => this.setState( { colorSelector: value } ) }
-// 				/>
-// 				<ColorPalette
-// 					onChange={ ( value ) => {
-// 						switch (this.state.colorSelector) {
-// 						  case 'textBackgroundColor':
-// 						    setAttributes( { textBackgroundColor: value} );
-// 						    break;
-// 							case 'titleBackgroundColor':
-// 							  setAttributes( { titleBackgroundColor: value} );
-// 							  break;
-// 						  case 'titleColor':
-// 								setAttributes( { titleColor: value} );
-// 								break;
-// 						  case 'textColor':
-// 						    setAttributes( { textColor: value} );
-// 						    break;
-// 							}
-// 						}
-// 					}
-// 				/>
-// 				<RangeControl
-// 				label={ __("Border: ") }
-// 				value={ (attributes.borderRadius / 3) }
-// 				min={ 0 }
-// 				max={ 5 }
-// 				onChange={ (value) => setAttributes( { borderRadius: (value * 3) } ) }
-// 				/>
-// 				<div className="colorPreview" onClick={ () => this.setState( { colorSelector: 'textBackgroundColor' } ) } style={{
-// 						borderRadius: attributes.borderRadius,
-// 						border: "1px solid rgba(0, 0, 0, 0.2)",
-// 						width: "75px",
-// 						height: "60px",
-// 						position: "relative",
-// 						left: "33%",
-// 						textAlign: 'center',
-// 						backgroundColor: attributes.textBackgroundColor,
-// 						boxShadow: "0 2px 5px rgba(0, 0, 0, 0.5)",
-// 						marginBottom: "3px",
-// 					}}>
-// 					<div className="titleBackgroundColor" style={ styles.previewBox.titleBackgroundColor } onClick={ (e) => this.handleChildClick(e) }>
-// 						<h3 className="titleColor" style={ styles.previewBox.titleColor } onClick={ (e) => this.handleChildClick(e) }>Title</h3>
-// 					</div>
-// 					<p className="textColor" style={ styles.previewBox.textColor } onClick={ (e) => this.handleChildClick(e) }>Content</p>
-// 				</div>
-// 			</InspectorControls>
-// 		) : null;
-//
-// 		return [
-// 			controls,
-// 			(
-// 				<div>
-// 				{ this.state.isEditing
-// 					?
-// 						<div>
-// 							<TextControl
-// 								label="Button Text:"
-// 								onChange={ ( value ) => setAttributes( { buttonText: value } ) }
-// 								value={ attributes.buttonText }
-// 								placeholder="Button Text"
-// 							/>
-// 							<TextControl
-// 								label="Pop Up Title:"
-// 								onChange={ ( value ) => setAttributes( { title: value } ) }
-// 								value={ attributes.title }
-// 								placeholder="Pop Up Title"
-// 							/>
-// 							<label class="blocks-base-control__label">Pop Up Content:</label>
-// 							<InnerBlocks/>
-// 							<div style={{textAlign: 'right'}}>
-// 								<IconButton style={{display: 'inline-block'}} icon="editor-break" label={ __( 'Apply' ) } type="submit" onClick={(event) => { event.preventDefault(); this.setState({ isEditing: false });}}/>
-// 							</div>
-// 						</div>
-// 					:
-// 						<div className={ className } onClick={() => this.setState({ isEditing: true })}>
-// 							<p><button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target={"#"+attributes.randomKey}>
-// 								{attributes.buttonText}
-// 							</button></p>
-//
-// 							<div className="modal fade" data-easein={attributes.animation} id={attributes.randomKey} tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-// 								<div className={ "modal-dialog"+attributes.size } role="document">
-// 									<div className="modal-content" style={ styles.modal.modalContent }>
-// 										<div className="modal-header" style={ styles.modal.modalHeader }>
-// 											<h4 className="modal-title" id="myModalLabel" style={ styles.modal.modalTitle }>{attributes.title}</h4>
-// 											<button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-// 										</div>
-// 										<div className="modal-body">
-// 											<InnerBlocks/>
-// 										</div>
-// 									</div>
-// 								</div>
-// 							</div>
-// 						</div>
-// 				}
-//
-// 			</div>)
-// 		];
-// 	}
-// }
-
 /**
  * Register: aa Gutenberg Block.
  *
@@ -246,14 +49,15 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 		},
 	},
 
-	/**
-	 * The edit function describes the structure of your block in the context of the editor.
-	 * This represents what the editor will render when the block is used.
-	 *
-	 * The "edit" property must be a valid function.
-	 *
-	 * @link https://wordpress.org/gutenberg/handbook/block-api/block-edit-save/
-	 */
+	 // <PlainText
+		//  style={{ backgroundColor: "rgba(0,0,0,0)", textAlign: "center", width: "50%"}}
+		//  value={pricingItem.title}
+		// 	onChange={ value => {
+		// 		let newPricingItems = [ ...attributes.pricingItems ]
+		// 		newPricingItems[i].title = value
+		// 		setAttributes( { pricingItems: newPricingItems } )
+		// 	} }
+	 // />
 
 	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
 
@@ -351,7 +155,18 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									pricingItem.planItems.map( (planItem, j) => {
 										return (
 											<div className={"plan-item "+j} key={j}>
-												{planItem.text}
+												<PlainText
+													style={{ backgroundColor: "rgba(0,0,0,0)", textAlign: "center", width: "50%"}}
+													value={planItem.text}
+													onChange={(value) => {
+														let newPlanItem = { text: value }
+														let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+														newPlanItems[j] = newPlanItem
+														let newPricingItems = [ ...attributes.pricingItems ]
+														newPricingItems[i].planItems = newPlanItems
+														setAttributes( { pricingItems: newPricingItems } )
+													}}
+												/>
 											</div>
 										)
 									})
@@ -359,10 +174,23 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							</div>
 							<div style={{textAlign: 'right'}}>
 								{ __("Add or Remove Detail:") }&nbsp;
-								<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-									console.log('test')
-								}}><span className="dashicons dashicons-plus"></span></ button>
-								<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
+								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
+									onClick={() => {
+										let newPlanItem = { text: "Detail" }
+										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+										newPlanItems.push(newPlanItem)
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].planItems = newPlanItems
+										setAttributes( { pricingItems: newPricingItems } )
+									}}><span className="dashicons dashicons-plus"></span></ button>
+								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
+									onClick={() => {
+										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+										newPlanItems.pop()
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].planItems = newPlanItems
+										setAttributes( { pricingItems: newPricingItems } )
+									}}><span className="dashicons dashicons-minus"></span></ button>
 							</div>
 							<div className="plan-footer">
 								<ToggleControl
@@ -388,6 +216,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 												renderContent={ () => (
 													<div>
 														<TextControl
+															label={ __( "Button Text:" ) }
 															value={pricingItem.button.text}
 															 onChange={ value => {
 																 let newPricingItems = [ ...attributes.pricingItems ]
@@ -397,6 +226,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 															placeholder={ __("Button Text") }
 														/>
 														<TextControl
+															label={ __( "Destination Path:" ) }
 															value={pricingItem.button.link}
 															 onChange={ value => {
 																 let newPricingItems = [ ...attributes.pricingItems ]
