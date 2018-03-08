@@ -47,6 +47,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			type: 'array',
 			default: [],
 		},
+		format: 'pricing-table',
 	},
 
 	 // <PlainText
@@ -62,7 +63,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
 
 		const renderPricingTable = (
-			<div className="pricing-table">
+			<div className='pricing-table'>
 				{ attributes.pricingItems.map( (pricingItem, i) => {
 					return (
 						<div className={"pricing-plan "+i} key={i}>
@@ -154,29 +155,46 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								{
 									pricingItem.planItems.map( (planItem, j) => {
 										return (
-											<div className={"plan-item "+j} key={j}>
-												<PlainText
-													style={{ backgroundColor: "rgba(0,0,0,0)", textAlign: "center"}}
-													value={planItem.text}
-													onChange={(value) => {
-														let newPlanItem = { text: value }
-														let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-														newPlanItems[j] = newPlanItem
-														let newPricingItems = [ ...attributes.pricingItems ]
-														newPricingItems[i].planItems = newPlanItems
-														setAttributes( { pricingItems: newPricingItems } )
-													}}
-												/>
+											<div className={"plan-item "+j} key={j} style={{display: "flex", justifyContent: "space-between"}}>
+												<div style={{display: "inline-block"}}>
+													{planItem.text}
+												</div>
+												<div style={{display: "inline-block"}}>
+													<Dropdown
+														renderToggle={ ( { isOpen, onToggle } ) => (
+															<div style={{textAlign: 'right'}}>
+																<button style={{display: "inline-block", padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
+																	<span className="dashicons dashicons-edit"></span>
+																</button>
+															</div>
+														) }
+														renderContent={ () => (
+															<TextControl
+																style={{textAlign: "center"}}
+																label={ __( "Content:") }
+																placeHolder={ __( "Content") }
+																value={planItem.text}
+																onChange={(value) => {
+																	let newPlanItem = { text: value }
+																	let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+																	newPlanItems[j] = newPlanItem
+																	let newPricingItems = [ ...attributes.pricingItems ]
+																	newPricingItems[i].planItems = newPlanItems
+																	setAttributes( { pricingItems: newPricingItems } )
+																}}
+															/>
+														)}
+													/>
+												</div>
 											</div>
 										)
 									})
 								}
 							</div>
 							<div style={{textAlign: 'right'}}>
-								{ __("Add or Remove Detail:") }&nbsp;
 								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
 									onClick={() => {
-										let newPlanItem = { text: "Detail Text" }
+										let newPlanItem = {}
 										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
 										newPlanItems.push(newPlanItem)
 										let newPricingItems = [ ...attributes.pricingItems ]
@@ -248,17 +266,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			</div>
 		)
 
-		const addRemovePlanItem = (
-			<div style={{textAlign: 'right'}}>
-				<button style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={(event) => {
-					console.log(event)
-					let key = 'test'
-					let obj = {}
-				}}><span className="dashicons dashicons-plus"></span></ button>
-				<button style={{display: 'inline-block'}} className="components-button components-icon-button"><span className="dashicons dashicons-minus"></span></ button>
-			</div>
-		)
-
 		const addRemovePricingItem = (
 			<div style={{textAlign: 'right'}}>
 				{ __("Add or Remove Item:") }&nbsp;
@@ -292,16 +299,33 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			</div>
 		);
 
-		return (
-			<div className='wp-block-pricing-table'>
-				{renderPricingTable}
-				{ focus ?
-					<div>
-						{addRemovePricingItem}
-					</div>
-				: null }
-		 </div>
-		)
+		const Controls = focus ? (
+			<InspectorControls>
+				<SelectControl
+						label={ __("Format: ") }
+						value={ attributes.format }
+						options={[
+							{ value: 'pricing-table', label: 'Regular' },
+							{ value: 'pricing-table is-comparative', label: 'Comparative' },
+						]}
+						onChange={ (value) => setAttributes( { orientation: value } ) }
+					/>
+			</InspectorControls>
+		) : null
+
+		return [
+			Controls,
+			(
+				<div className='wp-block-pricing-table'>
+					{renderPricingTable}
+					{ focus ?
+						<div>
+							{addRemovePricingItem}
+						</div>
+					: null }
+			 </div>
+			)
+		]
 
 	},
 
