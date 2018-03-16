@@ -1,5 +1,5 @@
 /**
- * BLOCK: gutenberg-pop-up
+ * BLOCK: gutenberg-pricing-table
  *
  * Registering a basic block with Gutenberg.
  * Simple block, renders and saves the same content without any interactivity.
@@ -68,7 +68,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										</button>
 									</div>
 								) }
-								renderContent={ () => (
+								renderContent={ ({ onToggle }) => (
 									<div style={{ padding: "6px" }}>
 										<TextControl
 											label={ __("Title:") }
@@ -124,6 +124,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 												let newPricingItems = [ ...attributes.pricingItems ]
 												newPricingItems[i].color = value
 												setAttributes( { pricingItems: newPricingItems } )
+												// onToggle()
 											} }
 										/>
 									</div>
@@ -356,7 +357,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							<div className="plan-footer">
 								{
 									pricingItem.button.hasButton ? (
-										<button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}} onClick={ () => window.open(pricingItem.button.link)}>{pricingItem.button.text}</button>
+										<a href={pricingItem.button.link} target="_blank"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
 									) : null
 								}
 							</div>
