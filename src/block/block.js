@@ -357,7 +357,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							<div className="plan-footer">
 								{
 									pricingItem.button.hasButton ? (
-										<a href={pricingItem.button.link} target="_blank"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
+										<a href={pricingItem.button.link} target="_blank" rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
 									) : null
 								}
 							</div>
