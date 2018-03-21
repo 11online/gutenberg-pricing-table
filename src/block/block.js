@@ -47,10 +47,46 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			type: 'array',
 			default: [],
 		},
-		// format: 'pricing-table',
+		currency: {
+			type: 'string',
+			default: '$',
+		},
+		per: {
+			type: 'string',
+			deafult: '',
+		},
 	},
 
 	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
+
+		const Controls = focus ? (
+			<InspectorControls>
+				<div className="pricingItems-controls-sm" style={{display: "flex", justifyContent: "space-between" }}>
+					<SelectControl
+						style={{ display: "inline-block", width: "auto"}}
+						value={ attributes.currency }
+						options={[
+												{ value: '$', label: '$' },
+												{ value: '£', label: '£' },
+												{ value: '€', label: '€' },
+											]}
+						onChange={ value => {
+						 setAttributes( { currency: value } )
+					 } }
+					 label={ __( "Currency:" ) }
+					/>
+					<TextControl
+						style={{textAlign: 'center', display: "inline-block", width: "100px" }}
+						label={ __("Per:") }
+						value={attributes.per}
+						 onChange={ value => {
+							 setAttributes( { per: value } )
+						 } }
+						placeholder={ __("/") }
+					/>
+				</div>
+			</InspectorControls>
+		) : null;
 
 		const renderPricingTable = (
 			<div className={'pricing-table'}>
@@ -80,44 +116,17 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 											 } }
 											placeholder={ __("Title") }
 										/>
-										<div className="pricingItems-controls-sm" style={{display: "flex", justifyContent: "space-between" }}>
-											<SelectControl
-												style={{ display: "inline-block", width: "auto"}}
-												value={ pricingItem.currency }
-												options={[
-																		{ value: '$', label: '$' },
-																		{ value: '£', label: '£' },
-																		{ value: '€', label: '€' },
-																	]}
-												onChange={ value => {
- 												 let newPricingItems = [ ...attributes.pricingItems ]
- 												 newPricingItems[i].currency = value
- 												 setAttributes( { pricingItems: newPricingItems } )
- 											 } }
-											/>
-											<TextControl
-												style={{textAlign: 'center', display: "inline-block", width: "50px" }}
-												label={ __("Price:") }
-												value={pricingItem.amount}
-												 onChange={ value => {
-													 let newPricingItems = [ ...attributes.pricingItems ]
-													 newPricingItems[i].amount = value
-													 setAttributes( { pricingItems: newPricingItems } )
-												 } }
-												placeholder={ __("Amount") }
-											/>
-											<TextControl
-												style={{textAlign: 'center', display: "inline-block", width: "100px" }}
-												label={ __("Subtext:") }
-												value={pricingItem.per}
-												 onChange={ value => {
-													 let newPricingItems = [ ...attributes.pricingItems ]
-													 newPricingItems[i].per = value
-													 setAttributes( { pricingItems: newPricingItems } )
-												 } }
-												placeholder={ __("/") }
-											/>
-										</div>
+										<TextControl
+											style={{textAlign: 'center', display: "inline-block", width: "50px" }}
+											label={ __("Price:") }
+											value={pricingItem.amount}
+											 onChange={ value => {
+												 let newPricingItems = [ ...attributes.pricingItems ]
+												 newPricingItems[i].amount = value
+												 setAttributes( { pricingItems: newPricingItems } )
+											 } }
+											placeholder={ __("Amount") }
+										/>
 										<ColorPalette
 											value={pricingItem.color}
 											onChange={ (value) => {
@@ -136,12 +145,21 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							<div className="plan-price">
 								<span className="plan-price-amount" style={{color: pricingItem.color}}>
 									<span className="plan-price-currency">
-										{pricingItem.currency}
+										{attributes.currency}
 									</span>
-									{pricingItem.amount}
+									<span>
+										<PlainText
+											value={pricingItem.amount}
+											onChange={ (value) => {
+												let newPricingItems = [ ...attributes.pricingItems ]
+												newPricingItems[i].amount = value
+												setAttributes( { pricingItems: newPricingItems } )
+											}}
+										/>
+									</span>
 								</span>
-								{pricingItem.per ? (
-									"/"+pricingItem.per
+								{attributes.per ? (
+									"/"+attributes.per
 								): null }
 							</div>
 							<div className="plan-items">
@@ -267,8 +285,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 					let obj = {
 						title: '',
 						amount: '0',
-						currency: '$',
-						per: '',
 						planItems: [],
 						button: {
 							hasButton: true,
@@ -278,13 +294,9 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						color: '#444'
 					}
 					newPricingItems.push(obj)
-					console.log('add')
-					console.log(newPricingItems)
 					setAttributes( { pricingItems: newPricingItems } );
 				}}><span className="dashicons dashicons-plus"></span></button>
 				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-					console.log('delete')
-					console.log(attributes.pricingItems)
 					let newPricingItems = [ ...attributes.pricingItems ]
 					newPricingItems.pop()
 					setAttributes( {pricingItems: newPricingItems})
@@ -307,7 +319,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 		// ) : null
 
 		return [
-			// Controls,
+			Controls,
 			(
 				<div className='wp-block-pricing-table'>
 					{renderPricingTable}
@@ -337,11 +349,13 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							<div className="plan-price">
 								<span className="plan-price-amount" style={{color: pricingItem.color}}>
 									<span className="plan-price-currency">
-										{pricingItem.currency}
+										{attributes.currency}
 									</span>
 									{pricingItem.amount}
 								</span>
-								{pricingItem.per}
+								{attributes.per ? (
+									"/"+attributes.per
+								): null }
 							</div>
 							<div className="plan-items">
 								{
