@@ -149,12 +149,14 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									</span>
 									<span>
 										<PlainText
+											style={{textAlign: "center", width: `${25 * pricingItem.amount.length}px`}}
 											value={pricingItem.amount}
 											onChange={ (value) => {
 												let newPricingItems = [ ...attributes.pricingItems ]
 												newPricingItems[i].amount = value
 												setAttributes( { pricingItems: newPricingItems } )
 											}}
+											maxLength={5}
 										/>
 									</span>
 								</span>
