@@ -9,6 +9,9 @@
 import './style.scss';
 import './editor.scss';
 
+import React from 'react';
+import { ChromePicker } from 'react-color';
+
 const { __ } = wp.i18n; // Import __() from wp.i18n
 const { registerBlockType, PlainText } = wp.blocks; // Import registerBlockType() from wp.blocks
 const TextControl = wp.components.TextControl;
@@ -131,6 +134,39 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						return `${width + base}px`
 					}
 
+					const colorControlBox = (
+						<div className='color-control-box' style={{padding: '10px'}}>
+							<ColorPalette
+								disableCustomColors
+								value={pricingItem.color}
+								onChange={ (value) => {
+									let newPricingItems = [ ...attributes.pricingItems ]
+									newPricingItems[i].color = value
+									setAttributes( { pricingItems: newPricingItems } )
+									// onToggle()
+								} }
+							/>
+							<a class="button-link blocks-color-palette__clear" onClick={ () => setAttributes( { customColor: ! attributes.customColor } ) } type="button">
+								<div className="blocks-color-palette__item-wrapper blocks-color-palette__custom-color">
+									<span className="blocks-color-palette__custom-color-gradient" />
+								</div>
+							</a>
+							{ attributes.customColor ?
+								<ChromePicker
+									style={{width: '100%'}}
+									color={ pricingItem.color }
+									onChangeComplete={ ( color ) => {
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].color = color.hex
+										setAttributes( { pricingItems: newPricingItems } )
+									} }
+									style={ { width: '100%' } }
+									disableAlpha
+								/>
+							: null }
+						</div>
+					)
+
 					return (
 						<div className={"pricing-plan "+i} key={i}>
 							<Dropdown
@@ -144,40 +180,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										</button>
 									</div>
 								) }
-								renderContent={ ({ onToggle }) => (
-									<div style={{ padding: "6px" }}>
-										<TextControl
-											label={ __("Title:") }
-											value={pricingItem.title}
-											 onChange={ value => {
-												 let newPricingItems = [ ...attributes.pricingItems ]
-												 newPricingItems[i].title = value
-												 setAttributes( { pricingItems: newPricingItems } )
-											 } }
-											placeholder={ __("Title") }
-										/>
-										<TextControl
-											style={{textAlign: 'center', display: "inline-block", width: "50px" }}
-											label={ __("Price:") }
-											value={pricingItem.amount}
-											 onChange={ value => {
-												 let newPricingItems = [ ...attributes.pricingItems ]
-												 newPricingItems[i].amount = value
-												 setAttributes( { pricingItems: newPricingItems } )
-											 } }
-											placeholder={ __("Amount") }
-										/>
-										<ColorPalette
-											value={pricingItem.color}
-											onChange={ (value) => {
-												let newPricingItems = [ ...attributes.pricingItems ]
-												newPricingItems[i].color = value
-												setAttributes( { pricingItems: newPricingItems } )
-												// onToggle()
-											} }
-										/>
-									</div>
-								) }
+								renderContent={ () => colorControlBox }
 							/>
 							<div className="plan-header">
 							<PlainText
@@ -225,7 +228,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										return (
 											<div className={"plan-item "+j} key={j}>
 												<PlainText
-													style={{width: determineInputWidth(planItem), minWidth: '60px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0)'}}
+													style={{width: determineInputWidth(planItem), minWidth: '120px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0)'}}
 													value={planItem.text}
 													onChange={ value => {
 														let newPlanItem = { text: value }
@@ -342,20 +345,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 				}}><span className="dashicons dashicons-minus"></span></button>
 			</div>
 		);
-
-		// const Controls = focus ? (
-		// 	<InspectorControls>
-		// 		<SelectControl
-		// 				label={ __("Format: ") }
-		// 				value={ attributes.format }
-		// 				options={[
-		// 					{ value: 'pricing-table', label: 'Regular' },
-		// 					{ value: 'pricing-table is-comparative', label: 'Comparative' },
-		// 				]}
-		// 				onChange={ (value) => setAttributes( { orientation: value } ) }
-		// 			/>
-		// 	</InspectorControls>
-		// ) : null
 
 		return [
 			Controls,
