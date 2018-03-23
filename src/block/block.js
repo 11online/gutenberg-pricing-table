@@ -91,6 +91,12 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			</InspectorControls>
 		) : null;
 
+		const preventEnter = (e) => {
+			if (e.key == 'Enter') {
+				e.preventDefault()
+			}
+		}
+
 		const renderPricingTable = (
 			<div className={'pricing-table'}>
 				{ attributes.pricingItems.map( (pricingItem, i) => {
@@ -199,6 +205,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									setAttributes( { pricingItems: newPricingItems } )
 								}}
 								placeholder={ __( "Title") }
+								onKeyDown={ e => preventEnter(e)}
 							/>
 							</div>
 							<div className="plan-price">
@@ -218,6 +225,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 											}}
 											maxLength={5}
 											placeholder={ __( "0") }
+											onKeyDown={ e => preventEnter(e)}
 										/>
 									</span>
 								</span>
