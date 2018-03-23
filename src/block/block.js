@@ -147,7 +147,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									let newPricingItems = [ ...attributes.pricingItems ]
 									newPricingItems[i].color = value
 									setAttributes( { pricingItems: newPricingItems } )
-									// onToggle()
 								} }
 							/>
 							<a class="button-link blocks-color-palette__clear" onClick={ () => setAttributes( { customColor: ! attributes.customColor } ) } type="button">
@@ -373,6 +372,15 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 															 } }
 															placeholder={ __("Destination Path") }
 														/>
+														<ToggleControl
+															label={ __("Open in New Tab?") }
+															checked={ !! pricingItem.button.openInNewTab }
+															onChange={ value => {
+																let newPricingItems = [ ...attributes.pricingItems ]
+																newPricingItems[i].button.openInNewTab = ! pricingItem.button.openInNewTab
+																setAttributes( { pricingItems: newPricingItems } )
+															} }
+														/>
 													</div>
 												)}
 											/>
@@ -466,7 +474,9 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							<div className="plan-footer">
 								{
 									pricingItem.button.hasButton ? (
-										<a href={pricingItem.button.link} target="_blank" rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
+										pricingItem.button.openInNewTab ? (
+											<a href={pricingItem.button.link} target="_blank" rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
+										) : <a href={pricingItem.button.link}><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
 									) : null
 								}
 							</div>
