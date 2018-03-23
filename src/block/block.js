@@ -100,7 +100,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						let shortChars = ['i' , 'j', 'l', 't', 'I',]
 						let inputArray = []
 						let base
-
 						//set the base depending on the input received
 						switch(input) {
 					    case pricingItem.amount:
@@ -117,7 +116,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									inputArray = input.text.split('')
 								}
 						}
-
 						let mod = base - base / 2
 						let width = 0
 						inputArray.forEach(char => {
@@ -167,21 +165,30 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						</div>
 					)
 
+					const deletePricingItem = () => {
+						let newPricingItems = [ ...attributes.pricingItems ]
+						newPricingItems.splice(i, 1)
+						setAttributes( {pricingItems: newPricingItems})
+					}
+
 					return (
 						<div className={"pricing-plan "+i} key={i}>
-							<Dropdown
+							<div className="conrol-buttons-box" style={{display: 'flex', justifyContent: 'space-between'}}>
+								<Dropdown
 								className="pricingItem-controls-button"
 								contentClassName="pricingItem-controls"
 								position="bottom right"
 								renderToggle={ ( { isOpen, onToggle } ) => (
-									<div style={{textAlign: 'right'}}>
-										<button style={{display: "inline-block", padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
-											<span className="dashicons dashicons-admin-generic"></span>
-										</button>
-									</div>
+									<button style={{display: "inline-block", padding: "none", textIndent: "none", color: pricingItem.color}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
+									<span className="dashicons dashicons-art"></span>
+									</button>
 								) }
 								renderContent={ () => colorControlBox }
-							/>
+								/>
+								<button type="button" style={{display: 'inline-block', padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={() => {
+									deletePricingItem()
+								}}><span className="dashicons dashicons-trash"></span></button>
+							</div>
 							<div className="plan-header">
 							<PlainText
 								style={{textAlign: "center", width: determineInputWidth(pricingItem.title), minWidth: '60px'}}
@@ -225,9 +232,56 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								{
 									pricingItem.planItems.map( (planItem, j) => {
 
+										const deletePlanItem = () => {
+											let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+											let newPricingItems = [ ...attributes.pricingItems ]
+											newPlanItems.splice(j, 1)
+											newPricingItems[i].planItems = newPlanItems
+											setAttributes( { pricingItems: newPricingItems } )
+											if ( j != 0 ) {
+												moveFocus.up()
+											}
+										}
+
+										const addPlanItem = () => {
+											let newPlanItem = { text: '' }
+											let newPricingItems = [ ...attributes.pricingItems ]
+											let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+											newPlanItems.splice(j+1, 0, newPlanItem)
+											newPricingItems[i].planItems = newPlanItems
+											setAttributes( { pricingItems: newPricingItems } )
+											setTimeout( () => { moveFocus.down() }, 100)
+										}
+
+										const handleOnKeyDown = (e) => {
+											if (e.key == 'Enter') {
+												e.preventDefault()
+												console.log(attributes.pricingItems[i].planItems[j].text)
+												addPlanItem()
+											}
+											if (e.key == 'Backspace' && attributes.pricingItems[i].planItems[j].text == '') {
+												e.preventDefault()
+												deletePlanItem()
+											}
+										}
+
+										const moveFocus = {
+											up: () => {
+												document.getElementById("plan-item-"+i+(j-1)).focus()
+											},
+											down: () => {
+												document.getElementById("plan-item-"+i+(j+1)).focus()
+											},
+											bottom: () => {
+												console.log("plan-item-"+i+(attributes.pricingItems[i].planItems.length))
+												document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length)).focus()
+											}
+										}
+
 										return (
-											<div className={"plan-item "+j} key={j}>
+											<div className={"plan-item"} key={j}>
 												<PlainText
+													id={"plan-item-"+i+j}
 													style={{width: determineInputWidth(planItem), minWidth: '120px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0)'}}
 													value={planItem.text}
 													onChange={ value => {
@@ -238,6 +292,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 														newPricingItems[i].planItems = newPlanItems
 														setAttributes( { pricingItems: newPricingItems } )
 													}}
+													onKeyDown={ e => handleOnKeyDown(e) }
 												/>
 											</div>
 										)
@@ -253,16 +308,20 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										let newPricingItems = [ ...attributes.pricingItems ]
 										newPricingItems[i].planItems = newPlanItems
 										setAttributes( { pricingItems: newPricingItems } )
+										setTimeout( () => {document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus() }, 100)
 									}}><span className="dashicons dashicons-plus"></span></ button>
-								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
-									onClick={() => {
-										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-										newPlanItems.pop()
-										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].planItems = newPlanItems
-										setAttributes( { pricingItems: newPricingItems } )
-									}}><span className="dashicons dashicons-minus"></span></ button>
-							</div>
+								{ attributes.pricingItems[i].planItems.length > 0 ?
+									<button style={{display: 'inline-block'}} className="components-button components-icon-button"
+										onClick={() => {
+											let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+											newPlanItems.pop()
+											let newPricingItems = [ ...attributes.pricingItems ]
+											newPricingItems[i].planItems = newPlanItems
+											setAttributes( { pricingItems: newPricingItems } )
+											document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus()
+										}}><span className="dashicons dashicons-minus"></span></ button>
+									: null }
+								</div>
 							<div className="plan-footer">
 								<ToggleControl
 									label={ __("Button?") }
@@ -285,7 +344,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 													</button>
 												) }
 												renderContent={ () => (
-													<div>
+													<div className='button-box' style={{padding: '10px'}}>
 														<TextControl
 															label={ __( "Button Text:" ) }
 															value={pricingItem.button.text}
