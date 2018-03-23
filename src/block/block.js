@@ -95,16 +95,28 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 					const determineInputWidth = (input) => {
 						let longChars = ['m', 'G', 'M', 'O', 'Q', 'W',]
 						let shortChars = ['i' , 'j', 'l', 't', 'I',]
+						let inputArray = []
 						let base
-						if (input === pricingItem.amount) {
-							base = 25
+
+						//set the base depending on the input received
+						switch(input) {
+					    case pricingItem.amount:
+								base = 25
+								inputArray = input.split('')
+					      break;
+					    case pricingItem.title:
+								base = 15
+								inputArray = input.split('')
+						    break;
+					    default:
+								base = 9
+								if (input.text) {
+									inputArray = input.text.split('')
+								}
 						}
-						else if (input === pricingItem.title) {
-							base = 15
-						}
-						let mod = base - base / 2 
+
+						let mod = base - base / 2
 						let width = 0
-						let inputArray = input.split('')
 						inputArray.forEach(char => {
 							if (longChars.includes(char)) {
 								width += (base + mod)
@@ -209,38 +221,21 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							<div className="plan-items">
 								{
 									pricingItem.planItems.map( (planItem, j) => {
+
 										return (
-											<div className={"plan-item "+j} key={j} style={{display: "flex", justifyContent: "space-between"}}>
-												<div style={{display: "inline-block"}}>
-													{planItem.text}
-												</div>
-												<div style={{display: "inline-block"}}>
-													<Dropdown
-														renderToggle={ ( { isOpen, onToggle } ) => (
-															<div style={{textAlign: 'right'}}>
-																<button style={{display: "inline-block", padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
-																	<span className="dashicons dashicons-edit"></span>
-																</button>
-															</div>
-														) }
-														renderContent={ () => (
-															<TextControl
-																style={{textAlign: "center"}}
-																label={ __( "Content:") }
-																placeHolder={ __( "Content") }
-																value={planItem.text}
-																onChange={(value) => {
-																	let newPlanItem = { text: value }
-																	let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-																	newPlanItems[j] = newPlanItem
-																	let newPricingItems = [ ...attributes.pricingItems ]
-																	newPricingItems[i].planItems = newPlanItems
-																	setAttributes( { pricingItems: newPricingItems } )
-																}}
-															/>
-														)}
-													/>
-												</div>
+											<div className={"plan-item "+j} key={j}>
+												<PlainText
+													style={{width: determineInputWidth(planItem), minWidth: '60px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0)'}}
+													value={planItem.text}
+													onChange={ value => {
+														let newPlanItem = { text: value }
+														let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+														newPlanItems[j] = newPlanItem
+														let newPricingItems = [ ...attributes.pricingItems ]
+														newPricingItems[i].planItems = newPlanItems
+														setAttributes( { pricingItems: newPricingItems } )
+													}}
+												/>
 											</div>
 										)
 									})
@@ -406,7 +401,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									pricingItem.planItems.map( (planItem, j) => {
 										return (
 											<div className={"plan-item "+j} key={j}>
-												{planItem.text}
+												{planItem.text ? planItem.text : <div>&nbsp;</div>}
 											</div>
 										)
 									})
