@@ -91,6 +91,34 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 		const renderPricingTable = (
 			<div className={'pricing-table'}>
 				{ attributes.pricingItems.map( (pricingItem, i) => {
+
+					const determineInputWidth = (input) => {
+						let longChars = ['m', 'G', 'M', 'O', 'Q', 'W',]
+						let shortChars = ['i' , 'j', 'l', 't', 'I',]
+						let base
+						if (input === pricingItem.amount) {
+							base = 25
+						}
+						else if (input === pricingItem.title) {
+							base = 15
+						}
+						let mod = base - base / 2 
+						let width = 0
+						let inputArray = input.split('')
+						inputArray.forEach(char => {
+							if (longChars.includes(char)) {
+								width += (base + mod)
+							}
+							else if (shortChars.includes(char)) {
+								width += (base - mod)
+							}
+							else {
+								width += base
+							}
+						})
+						return `${width + base}px`
+					}
+
 					return (
 						<div className={"pricing-plan "+i} key={i}>
 							<Dropdown
@@ -140,7 +168,16 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								) }
 							/>
 							<div className="plan-header">
-								{pricingItem.title}
+							<PlainText
+								style={{textAlign: "center", width: determineInputWidth(pricingItem.title), minWidth: '60px'}}
+								value={pricingItem.title}
+								onChange={ (value) => {
+									let newPricingItems = [ ...attributes.pricingItems ]
+									newPricingItems[i].title = value
+									setAttributes( { pricingItems: newPricingItems } )
+								}}
+								placeholder={ __( "Title") }
+							/>
 							</div>
 							<div className="plan-price">
 								<span className="plan-price-amount" style={{color: pricingItem.color}}>
@@ -150,7 +187,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 									</span>
 									<span>
 										<PlainText
-											style={{textAlign: "center", width: `${25 * pricingItem.amount.length + 25}px`}}
+											style={{textAlign: "center", width: determineInputWidth(pricingItem.amount), minWidth: '40px'}}
 											value={pricingItem.amount}
 											onChange={ (value) => {
 												let newPricingItems = [ ...attributes.pricingItems ]
@@ -158,6 +195,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 												setAttributes( { pricingItems: newPricingItems } )
 											}}
 											maxLength={5}
+											placeholder={ __( "0") }
 										/>
 									</span>
 								</span>
