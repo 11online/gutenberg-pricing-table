@@ -144,12 +144,13 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							</div>
 							<div className="plan-price">
 								<span className="plan-price-amount" style={{color: pricingItem.color}}>
-									<span className="plan-price-currency">
+									<span className="plan-price-currency"
+										style={{position: 'relative', left: '15px', top: '-25px' }}>
 										{attributes.currency}
 									</span>
 									<span>
 										<PlainText
-											style={{textAlign: "center", width: `${25 * pricingItem.amount.length}px`}}
+											style={{textAlign: "center", width: `${25 * pricingItem.amount.length + 25}px`}}
 											value={pricingItem.amount}
 											onChange={ (value) => {
 												let newPricingItems = [ ...attributes.pricingItems ]
@@ -160,9 +161,12 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										/>
 									</span>
 								</span>
+								<span className="per-box"
+									style={{position: 'relative', left: '-15px', top: '-20px' }}>
 								{attributes.per ? (
 									"/"+attributes.per
 								): null }
+								</span>
 							</div>
 							<div className="plan-items">
 								{
