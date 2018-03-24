@@ -165,20 +165,22 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 
 					const PricingItemControlButtons = (
 						<div className="conrol-buttons-box" style={{display: 'flex', justifyContent: 'space-between'}}>
-						<Dropdown
-						className="pricingItem-controls-button"
-						contentClassName="pricingItem-controls"
-						position="bottom right"
-						renderToggle={ ( { isOpen, onToggle } ) => (
-							<button style={{display: "inline-block", padding: "none", textIndent: "none", color: pricingItem.color}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
-							<span className="dashicons dashicons-art"></span>
+							<Dropdown
+								className="pricingItem-controls-button"
+								contentClassName="pricingItem-controls"
+								position="bottom right"
+								renderToggle={ ( { isOpen, onToggle } ) => (
+									<button style={{display: "inline-block", padding: "none", textIndent: "none", color: pricingItem.color}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
+									<span className="dashicons dashicons-art"></span>
+									</button>
+								) }
+								renderContent={ () => colorControlBox }
+							/>
+							<button type="button" style={{display: 'inline-block', padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={() => {
+								deletePricingItem()
+							}}>
+								<span className="dashicons dashicons-trash"></span>
 							</button>
-						) }
-						renderContent={ () => colorControlBox }
-						/>
-						<button type="button" style={{display: 'inline-block', padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={() => {
-							deletePricingItem()
-						}}><span className="dashicons dashicons-trash"></span></button>
 						</div>
 					)
 
@@ -327,6 +329,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 
 					const AddRemovePlanItemButtons = (
 						<div style={{textAlign: 'right'}}>
+							<div style={{fontSize: "0.75em"}}>{ __("Add Detail:") }&nbsp;</div>
 							<button style={{display: 'inline-block'}} className="components-button components-icon-button"
 								onClick={() => {
 									let newPlanItem = { text: '' }
@@ -339,22 +342,23 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								}}>
 									<span className="dashicons dashicons-plus"></span>
 								</ button>
-							{ attributes.pricingItems[i].planItems.length > 0 ?
-								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
-									onClick={() => {
-										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-										newPlanItems.pop()
-										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].planItems = newPlanItems
-										setAttributes( { pricingItems: newPricingItems } )
-										document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus()
-									}}>
-										<span className="dashicons dashicons-minus"></span>
-									</ button>
-								: null }
 						</div>
 					)
 
+					// { attributes.pricingItems[i].planItems.length > 0 ?
+					// 	<button style={{display: 'inline-block'}} className="components-button components-icon-button"
+					// 	onClick={() => {
+					// 		let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+					// 		newPlanItems.pop()
+					// 		let newPricingItems = [ ...attributes.pricingItems ]
+					// 		newPricingItems[i].planItems = newPlanItems
+					// 		setAttributes( { pricingItems: newPricingItems } )
+					// 		document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus()
+					// 	}}>
+					// 	<span className="dashicons dashicons-minus"></span>
+					// 	</ button>
+					// 	: null }
+					
 					const ButtonControls = (
 						<div className='button-box' style={{padding: '10px'}}>
 							<TextControl
