@@ -69,22 +69,18 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						style={{ display: "inline-block", width: "auto"}}
 						value={ attributes.currency }
 						options={[
-												{ value: '$', label: '$' },
-												{ value: '£', label: '£' },
-												{ value: '€', label: '€' },
-											]}
-						onChange={ value => {
-						 setAttributes( { currency: value } )
-					 } }
+							{ value: '$', label: '$' },
+							{ value: '£', label: '£' },
+							{ value: '€', label: '€' },
+						]}
+						onChange={ value => setAttributes( { currency: value } ) }
 					 label={ __( "Currency:" ) }
 					/>
 					<TextControl
 						style={{textAlign: 'center', display: "inline-block", width: "100px" }}
 						label={ __("Per:") }
 						value={attributes.per}
-						 onChange={ value => {
-							 setAttributes( { per: value } )
-						 } }
+						 onChange={ value => setAttributes( { per: value } ) }
 						placeholder={ __("/") }
 					/>
 				</div>
@@ -97,9 +93,38 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			}
 		}
 
+		const addPricingItem = (
+			<div style={{textAlign: 'right'}}>
+				{ __("Add Item:") }&nbsp;
+				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
+					const newPricingItems = [ ...attributes.pricingItems ];
+					let obj = {
+						title: '',
+						amount: '0',
+						planItems: [],
+						button: {
+							hasButton: true,
+							text: 'Choose',
+							link: '',
+							openInNewTab: false,
+						},
+						color: '#444'
+					}
+					newPricingItems.push(obj)
+					setAttributes( { pricingItems: newPricingItems } );
+				}}><span className="dashicons dashicons-plus"></span></button>
+			</div>
+		)
+
 		const renderPricingTable = (
 			<div className={'pricing-table'}>
 				{ attributes.pricingItems.map( (pricingItem, i) => {
+
+					const deletePricingItem = () => {
+						let newPricingItems = [ ...attributes.pricingItems ]
+						newPricingItems.splice(i, 1)
+						setAttributes( { pricingItems: newPricingItems } )
+					}
 
 					const determineInputWidth = (input) => {
 						let longChars = ['m', 'G', 'M', 'O', 'Q', 'W',]
@@ -138,6 +163,25 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						return `${width + base}px`
 					}
 
+					const PricingItemControlButtons = (
+						<div className="conrol-buttons-box" style={{display: 'flex', justifyContent: 'space-between'}}>
+						<Dropdown
+						className="pricingItem-controls-button"
+						contentClassName="pricingItem-controls"
+						position="bottom right"
+						renderToggle={ ( { isOpen, onToggle } ) => (
+							<button style={{display: "inline-block", padding: "none", textIndent: "none", color: pricingItem.color}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
+							<span className="dashicons dashicons-art"></span>
+							</button>
+						) }
+						renderContent={ () => colorControlBox }
+						/>
+						<button type="button" style={{display: 'inline-block', padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={() => {
+							deletePricingItem()
+						}}><span className="dashicons dashicons-trash"></span></button>
+						</div>
+					)
+
 					const colorControlBox = (
 						<div className='color-control-box' style={{padding: '10px'}}>
 							<ColorPalette
@@ -170,165 +214,212 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						</div>
 					)
 
-					const deletePricingItem = () => {
-						let newPricingItems = [ ...attributes.pricingItems ]
-						newPricingItems.splice(i, 1)
-						setAttributes( {pricingItems: newPricingItems})
+					const renderDynamicWidthPlainText = (field) => {
+						return (
+							<PlainText
+								style={{textAlign: "center", width: determineInputWidth(pricingItem[field]), minWidth: '50px'}}
+								value={pricingItem[field]}
+								onChange={ (value) => {
+									let newPricingItems = [ ...attributes.pricingItems ]
+									newPricingItems[i][field] = value
+									setAttributes( { pricingItems: newPricingItems } )
+								}}
+								placeholder={field === 'title' ? __( "Title" ) :  __( "0" ) }
+								onKeyDown={ e => preventEnter(e)}
+							/>
+						)
+					}
+
+					const Price = (
+						<span className="plan-price-amount" style={{color: pricingItem.color}}>
+							<span className="plan-price-currency"
+								style={{position: 'relative', left: '15px', top: '-25px' }}>
+								{attributes.currency}
+							</span>
+							<span>
+								{ renderDynamicWidthPlainText('amount') }
+							</span>
+						</span>
+					)
+
+					const Per = (
+						<span className="per-box" style={{position: 'relative', left: '-15px', top: '-20px' }}>
+							{ attributes.per ? (
+								"/"+attributes.per
+							): null }
+						</span>
+					)
+
+					const PlanItems = (
+
+						pricingItem.planItems.map( (planItem, j) => {
+
+							const deletePlanItem = () => {
+								let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+								let newPricingItems = [ ...attributes.pricingItems ]
+								newPlanItems.splice(j, 1)
+								newPricingItems[i].planItems = newPlanItems
+								setAttributes( { pricingItems: newPricingItems } )
+								if ( j != 0 ) {
+									moveFocus.up()
+								}
+							}
+
+							const addPlanItem = () => {
+								let newPlanItem = { text: '' }
+								let newPricingItems = [ ...attributes.pricingItems ]
+								let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+								newPlanItems.splice(j+1, 0, newPlanItem)
+								newPricingItems[i].planItems = newPlanItems
+								setAttributes( { pricingItems: newPricingItems } )
+								setTimeout( () => { moveFocus.down() }, 100)
+							}
+
+							const handleOnKeyDown = (e) => {
+								if (e.key == 'Enter') {
+									e.preventDefault()
+									console.log(attributes.pricingItems[i].planItems[j].text)
+									addPlanItem()
+								}
+								if (e.key == 'Backspace' && attributes.pricingItems[i].planItems[j].text == '') {
+									e.preventDefault()
+									deletePlanItem()
+								}
+							}
+
+							const moveFocus = {
+								up: () => {
+									document.getElementById("plan-item-"+i+(j-1)).focus()
+								},
+								down: () => {
+									document.getElementById("plan-item-"+i+(j+1)).focus()
+								},
+								bottom: () => {
+									console.log("plan-item-"+i+(attributes.pricingItems[i].planItems.length))
+									document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length)).focus()
+								}
+							}
+
+							const DynamicWidthPlainText_PlanItem = (
+								<PlainText
+									id={"plan-item-"+i+j}
+									style={{width: determineInputWidth(planItem), minWidth: '120px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0)'}}
+									value={planItem.text}
+									onChange={ value => {
+										let newPlanItem = { text: value }
+										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+										newPlanItems[j] = newPlanItem
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].planItems = newPlanItems
+										setAttributes( { pricingItems: newPricingItems } )
+									}}
+									onKeyDown={ e => handleOnKeyDown(e) }
+								/>
+							)
+
+							return (
+								<div className={"plan-item"} key={j}>
+									{ DynamicWidthPlainText_PlanItem }
+								</div>
+							)
+						})
+					)
+
+					const AddRemovePlanItemButtons = (
+						<div style={{textAlign: 'right'}}>
+							<button style={{display: 'inline-block'}} className="components-button components-icon-button"
+								onClick={() => {
+									let newPlanItem = { text: '' }
+									let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+									newPlanItems.push(newPlanItem)
+									let newPricingItems = [ ...attributes.pricingItems ]
+									newPricingItems[i].planItems = newPlanItems
+									setAttributes( { pricingItems: newPricingItems } )
+									setTimeout( () => {document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus() }, 100)
+								}}>
+									<span className="dashicons dashicons-plus"></span>
+								</ button>
+							{ attributes.pricingItems[i].planItems.length > 0 ?
+								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
+									onClick={() => {
+										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
+										newPlanItems.pop()
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].planItems = newPlanItems
+										setAttributes( { pricingItems: newPricingItems } )
+										document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus()
+									}}>
+										<span className="dashicons dashicons-minus"></span>
+									</ button>
+								: null }
+						</div>
+					)
+
+					const ButtonControls = (
+						<div className='button-box' style={{padding: '10px'}}>
+							<TextControl
+								label={ __( "Button Text:" ) }
+								value={pricingItem.button.text}
+								 onChange={ value => {
+									 let newPricingItems = [ ...attributes.pricingItems ]
+									 newPricingItems[i].button.text = value
+									 setAttributes( { pricingItems: newPricingItems } )
+								 } }
+								placeholder={ __("Button Text") }
+							/>
+							<TextControl
+								label={ __( "Destination Path:" ) }
+								value={pricingItem.button.link}
+								 onChange={ value => {
+									 let newPricingItems = [ ...attributes.pricingItems ]
+									 newPricingItems[i].button.link = value
+									 setAttributes( { pricingItems: newPricingItems } )
+								 } }
+								placeholder={ __("Destination Path") }
+							/>
+							<ToggleControl
+								label={ __("Open in New Tab?") }
+								checked={ !! pricingItem.button.openInNewTab }
+								onChange={ value => {
+									let newPricingItems = [ ...attributes.pricingItems ]
+									newPricingItems[i].button.openInNewTab = ! pricingItem.button.openInNewTab
+									setAttributes( { pricingItems: newPricingItems } )
+								} }
+							/>
+						</div>
+					)
+
+					const renderButton = () => {
+						return (
+							<div>
+								<Dropdown
+									className="pricingItem-controls-button"
+									contentClassName="pricingItem-controls"
+									renderToggle={ ( { isOpen, onToggle } ) => (
+										<button className="button is-fullwidth" style={{width: "100px", color: "white", backgroundColor: pricingItem.color}}  onClick={ onToggle }>
+											{ pricingItem.button.text }
+										</button>
+									) }
+									renderContent={ () => ButtonControls }
+								/>
+							</div>
+						)
 					}
 
 					return (
 						<div className={"pricing-plan "+i} key={i}>
-							<div className="conrol-buttons-box" style={{display: 'flex', justifyContent: 'space-between'}}>
-								<Dropdown
-								className="pricingItem-controls-button"
-								contentClassName="pricingItem-controls"
-								position="bottom right"
-								renderToggle={ ( { isOpen, onToggle } ) => (
-									<button style={{display: "inline-block", padding: "none", textIndent: "none", color: pricingItem.color}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
-									<span className="dashicons dashicons-art"></span>
-									</button>
-								) }
-								renderContent={ () => colorControlBox }
-								/>
-								<button type="button" style={{display: 'inline-block', padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={() => {
-									deletePricingItem()
-								}}><span className="dashicons dashicons-trash"></span></button>
-							</div>
+							{ PricingItemControlButtons }
 							<div className="plan-header">
-							<PlainText
-								style={{textAlign: "center", width: determineInputWidth(pricingItem.title), minWidth: '60px'}}
-								value={pricingItem.title}
-								onChange={ (value) => {
-									let newPricingItems = [ ...attributes.pricingItems ]
-									newPricingItems[i].title = value
-									setAttributes( { pricingItems: newPricingItems } )
-								}}
-								placeholder={ __( "Title") }
-								onKeyDown={ e => preventEnter(e)}
-							/>
+							{ renderDynamicWidthPlainText('title') }
 							</div>
 							<div className="plan-price">
-								<span className="plan-price-amount" style={{color: pricingItem.color}}>
-									<span className="plan-price-currency"
-										style={{position: 'relative', left: '15px', top: '-25px' }}>
-										{attributes.currency}
-									</span>
-									<span>
-										<PlainText
-											style={{textAlign: "center", width: determineInputWidth(pricingItem.amount), minWidth: '40px'}}
-											value={pricingItem.amount}
-											onChange={ (value) => {
-												let newPricingItems = [ ...attributes.pricingItems ]
-												newPricingItems[i].amount = value
-												setAttributes( { pricingItems: newPricingItems } )
-											}}
-											maxLength={5}
-											placeholder={ __( "0") }
-											onKeyDown={ e => preventEnter(e)}
-										/>
-									</span>
-								</span>
-								<span className="per-box"
-									style={{position: 'relative', left: '-15px', top: '-20px' }}>
-								{attributes.per ? (
-									"/"+attributes.per
-								): null }
-								</span>
+								{ Price }
+								{ Per }
 							</div>
 							<div className="plan-items">
-								{
-									pricingItem.planItems.map( (planItem, j) => {
-
-										const deletePlanItem = () => {
-											let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-											let newPricingItems = [ ...attributes.pricingItems ]
-											newPlanItems.splice(j, 1)
-											newPricingItems[i].planItems = newPlanItems
-											setAttributes( { pricingItems: newPricingItems } )
-											if ( j != 0 ) {
-												moveFocus.up()
-											}
-										}
-
-										const addPlanItem = () => {
-											let newPlanItem = { text: '' }
-											let newPricingItems = [ ...attributes.pricingItems ]
-											let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-											newPlanItems.splice(j+1, 0, newPlanItem)
-											newPricingItems[i].planItems = newPlanItems
-											setAttributes( { pricingItems: newPricingItems } )
-											setTimeout( () => { moveFocus.down() }, 100)
-										}
-
-										const handleOnKeyDown = (e) => {
-											if (e.key == 'Enter') {
-												e.preventDefault()
-												console.log(attributes.pricingItems[i].planItems[j].text)
-												addPlanItem()
-											}
-											if (e.key == 'Backspace' && attributes.pricingItems[i].planItems[j].text == '') {
-												e.preventDefault()
-												deletePlanItem()
-											}
-										}
-
-										const moveFocus = {
-											up: () => {
-												document.getElementById("plan-item-"+i+(j-1)).focus()
-											},
-											down: () => {
-												document.getElementById("plan-item-"+i+(j+1)).focus()
-											},
-											bottom: () => {
-												console.log("plan-item-"+i+(attributes.pricingItems[i].planItems.length))
-												document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length)).focus()
-											}
-										}
-
-										return (
-											<div className={"plan-item"} key={j}>
-												<PlainText
-													id={"plan-item-"+i+j}
-													style={{width: determineInputWidth(planItem), minWidth: '120px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0)'}}
-													value={planItem.text}
-													onChange={ value => {
-														let newPlanItem = { text: value }
-														let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-														newPlanItems[j] = newPlanItem
-														let newPricingItems = [ ...attributes.pricingItems ]
-														newPricingItems[i].planItems = newPlanItems
-														setAttributes( { pricingItems: newPricingItems } )
-													}}
-													onKeyDown={ e => handleOnKeyDown(e) }
-												/>
-											</div>
-										)
-									})
-								}
+								{ PlanItems }
 							</div>
-							<div style={{textAlign: 'right'}}>
-								<button style={{display: 'inline-block'}} className="components-button components-icon-button"
-									onClick={() => {
-										let newPlanItem = {}
-										let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-										newPlanItems.push(newPlanItem)
-										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].planItems = newPlanItems
-										setAttributes( { pricingItems: newPricingItems } )
-										setTimeout( () => {document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus() }, 100)
-									}}><span className="dashicons dashicons-plus"></span></ button>
-								{ attributes.pricingItems[i].planItems.length > 0 ?
-									<button style={{display: 'inline-block'}} className="components-button components-icon-button"
-										onClick={() => {
-											let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-											newPlanItems.pop()
-											let newPricingItems = [ ...attributes.pricingItems ]
-											newPricingItems[i].planItems = newPlanItems
-											setAttributes( { pricingItems: newPricingItems } )
-											document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus()
-										}}><span className="dashicons dashicons-minus"></span></ button>
-									: null }
-								</div>
+							{ AddRemovePlanItemButtons }
 							<div className="plan-footer">
 								<ToggleControl
 									label={ __("Button?") }
@@ -341,50 +432,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								/>
 								{
 									pricingItem.button.hasButton ? (
-										<div>
-											<Dropdown
-												className="pricingItem-controls-button"
-												contentClassName="pricingItem-controls"
-												renderToggle={ ( { isOpen, onToggle } ) => (
-													<button className="button is-fullwidth" style={{width: "100px", color: "white", backgroundColor: pricingItem.color}}  onClick={ onToggle }>
-														{ pricingItem.button.text }
-													</button>
-												) }
-												renderContent={ () => (
-													<div className='button-box' style={{padding: '10px'}}>
-														<TextControl
-															label={ __( "Button Text:" ) }
-															value={pricingItem.button.text}
-															 onChange={ value => {
-																 let newPricingItems = [ ...attributes.pricingItems ]
-																 newPricingItems[i].button.text = value
-																 setAttributes( { pricingItems: newPricingItems } )
-															 } }
-															placeholder={ __("Button Text") }
-														/>
-														<TextControl
-															label={ __( "Destination Path:" ) }
-															value={pricingItem.button.link}
-															 onChange={ value => {
-																 let newPricingItems = [ ...attributes.pricingItems ]
-																 newPricingItems[i].button.link = value
-																 setAttributes( { pricingItems: newPricingItems } )
-															 } }
-															placeholder={ __("Destination Path") }
-														/>
-														<ToggleControl
-															label={ __("Open in New Tab?") }
-															checked={ !! pricingItem.button.openInNewTab }
-															onChange={ value => {
-																let newPricingItems = [ ...attributes.pricingItems ]
-																newPricingItems[i].button.openInNewTab = ! pricingItem.button.openInNewTab
-																setAttributes( { pricingItems: newPricingItems } )
-															} }
-														/>
-													</div>
-												)}
-											/>
-										</div>
+										renderButton()
 									) : null
 								}
 							</div>
@@ -394,33 +442,6 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			</div>
 		)
 
-		const addRemovePricingItem = (
-			<div style={{textAlign: 'right'}}>
-				{ __("Add or Remove Item:") }&nbsp;
-				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-					const newPricingItems = [ ...attributes.pricingItems ];
-					let obj = {
-						title: '',
-						amount: '0',
-						planItems: [],
-						button: {
-							hasButton: true,
-							text: 'Choose',
-							link: '',
-						},
-						color: '#444'
-					}
-					newPricingItems.push(obj)
-					setAttributes( { pricingItems: newPricingItems } );
-				}}><span className="dashicons dashicons-plus"></span></button>
-				<button type="button" style={{display: 'inline-block'}} className="components-button components-icon-button" onClick={() => {
-					let newPricingItems = [ ...attributes.pricingItems ]
-					newPricingItems.pop()
-					setAttributes( {pricingItems: newPricingItems})
-				}}><span className="dashicons dashicons-minus"></span></button>
-			</div>
-		);
-
 		return [
 			Controls,
 			(
@@ -428,7 +449,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 					{renderPricingTable}
 					{ focus ?
 						<div>
-							{addRemovePricingItem}
+							{addPricingItem}
 						</div>
 					: null }
 			 </div>
