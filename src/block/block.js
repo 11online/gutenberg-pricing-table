@@ -358,7 +358,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 					// 	<span className="dashicons dashicons-minus"></span>
 					// 	</ button>
 					// 	: null }
-					
+
 					const ButtonControls = (
 						<div className='button-box' style={{padding: '10px'}}>
 							<TextControl
@@ -372,14 +372,14 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 								placeholder={ __("Button Text") }
 							/>
 							<TextControl
-								label={ __( "Destination Path:" ) }
+								label={ __( "Link:" ) }
 								value={pricingItem.button.link}
 								 onChange={ value => {
 									 let newPricingItems = [ ...attributes.pricingItems ]
 									 newPricingItems[i].button.link = value
 									 setAttributes( { pricingItems: newPricingItems } )
 								 } }
-								placeholder={ __("Destination Path") }
+								placeholder={ __("https://example.com") }
 							/>
 							<ToggleControl
 								label={ __("Open in New Tab?") }
