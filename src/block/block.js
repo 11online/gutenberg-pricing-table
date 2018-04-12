@@ -117,7 +117,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						planItems: [],
 						button: {
 							hasButton: true,
-							text: newPricingItems.length ? newPricingItems[newPricingItems.length-1].button.text : '',
+							text: newPricingItems.length ? newPricingItems[newPricingItems.length-1].button.text : 'Choose',
 							link: '',
 							openInNewTab: false,
 						},
