@@ -45,6 +45,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	keywords: [
 		__( 'Pricing Table' )
 	],
+	description: __( 'Create an organized table to display pricing options. Customize the link for each option by clicking on its button.'),
 	attributes: {
 		pricingItems: {
 			type: 'array',
