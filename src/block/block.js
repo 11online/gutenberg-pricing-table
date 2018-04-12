@@ -48,7 +48,20 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 	attributes: {
 		pricingItems: {
 			type: 'array',
-			default: [],
+			default: [
+				{
+					title: '',
+					amount: '0',
+					planItems: [],
+					button: {
+						hasButton: true,
+						text: 'Choose',
+						link: '',
+						openInNewTab: false,
+					},
+					color: '#444'
+				}
+			],
 		},
 		currency: {
 			type: 'string',
@@ -104,7 +117,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						planItems: [],
 						button: {
 							hasButton: true,
-							text: 'Choose',
+							text: newPricingItems.length ? newPricingItems[newPricingItems.length-1].button.text : '',
 							link: '',
 							openInNewTab: false,
 						},
