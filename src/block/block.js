@@ -74,9 +74,9 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 		},
 	},
 
-	edit: function({ attributes, setAttributes, focus, setFocus, className }) {
+	edit: function({ attributes, setAttributes, isSelected, className }) {
 
-		const Controls = focus ? (
+		const Controls = (
 			<InspectorControls>
 				<div className="pricingItems-controls-sm" style={{display: "flex", justifyContent: "space-between" }}>
 					<SelectControl
@@ -99,7 +99,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 					/>
 				</div>
 			</InspectorControls>
-		) : null;
+		)
 
 		const preventEnter = (e) => {
 			if (e.key == 'Enter') {
@@ -177,7 +177,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						return `${width + base}px`
 					}
 
-					const PricingItemControlButtons = (
+					const PricingItemControlButtons = isSelected && (
 						<div className="conrol-buttons-box" style={{display: 'flex', justifyContent: 'space-between'}}>
 							<Dropdown
 								className="pricingItem-controls-button"
@@ -341,7 +341,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 						})
 					)
 
-					const AddRemovePlanItemButtons = (
+					const AddRemovePlanItemButtons = isSelected && (
 						<div style={{textAlign: 'right'}}>
 							<div style={{fontSize: "0.75em"}}>{ __("Add Detail:") }&nbsp;</div>
 							<button style={{display: 'inline-block'}} className="components-button components-icon-button"
@@ -439,6 +439,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 							</div>
 							{ AddRemovePlanItemButtons }
 							<div className="plan-footer">
+							{ isSelected &&
 								<ToggleControl
 									label={ __("Button?") }
 									checked={ !! pricingItem.button.hasButton }
@@ -448,6 +449,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 										setAttributes( { pricingItems: newPricingItems } )
 									} }
 								/>
+							}
 								{
 									pricingItem.button.hasButton ? (
 										renderButton()
@@ -465,7 +467,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 			(
 				<div className='wp-block-pricing-table'>
 					{renderPricingTable}
-					{ focus ?
+					{ isSelected ?
 						<div>
 							{addPricingItem}
 						</div>
@@ -478,7 +480,7 @@ registerBlockType( 'block-party/block-gutenberg-pricing-table', {
 
 
 
-	save: function({ attributes, setAttributes, focus, setFocus, className }) {
+	save: function({ attributes, setAttributes, className }) {
 
 		return (
 			<div className="pricing-table">
