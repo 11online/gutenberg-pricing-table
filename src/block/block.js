@@ -37,13 +37,14 @@ const ToggleControl = wp.components.ToggleControl;
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'block-party/block-gutenberg-pricing-table', {
+registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-	title: __( 'Pricing Table' ), // Block title.
+	title: __( 'BP Pricing Table' ), // Block title.
 	icon: 'editor-table', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
 	category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
-		__( 'Pricing Table' )
+		__( 'Pricing Table' ),
+		__( 'Block Party' ),
 	],
 	description: __( 'Create an organized table to display pricing options. Customize the link for each option by clicking on its button.'),
 	attributes: {
