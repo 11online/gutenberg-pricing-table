@@ -13,16 +13,10 @@ import React from 'react';
 import { ChromePicker } from 'react-color';
 
 const { __ } = wp.i18n; // Import __() from wp.i18n
-const { registerBlockType, PlainText } = wp.blocks; // Import registerBlockType() from wp.blocks
-const TextControl = wp.components.TextControl;
-const SelectControl = wp.components.SelectControl;
-const RangeControl = wp.components.RangeControl;
-const IconButton = wp.components.IconButton;
+const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
 const { Component } = wp.element;
-const InspectorControls = wp.blocks.InspectorControls;
-const ColorPalette = wp.blocks.ColorPalette;
-const Dropdown = wp.components.Dropdown;
-const ToggleControl = wp.components.ToggleControl;
+const { InspectorControls, ColorPalette, PlainText } = wp.editor;
+const { TextControl, SelectControl, Dropdown, ToggleControl, RangeControl } = wp.components;
 
 /**
  * Register: aa Gutenberg Block.
