@@ -54,8 +54,9 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 						text: 'Choose',
 						link: '',
 						openInNewTab: false,
+						color: 'white',
 					},
-					color: '#444'
+					color: '#444',
 				}
 			],
 		},
@@ -116,8 +117,9 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 							text: newPricingItems.length ? newPricingItems[newPricingItems.length-1].button.text : 'Choose',
 							link: '',
 							openInNewTab: false,
+							color: 'white',
 						},
-						color: '#444'
+						color: '#444',
 					}
 					newPricingItems.push(obj)
 					setAttributes( { pricingItems: newPricingItems } );
@@ -195,6 +197,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 
 					const colorControlBox = (
 						<div className='color-control-box' style={{padding: '10px'}}>
+							{__('Main Color')}
 							<ColorPalette
 								disableCustomColors
 								value={pricingItem.color}
@@ -216,6 +219,34 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 									onChangeComplete={ ( color ) => {
 										let newPricingItems = [ ...attributes.pricingItems ]
 										newPricingItems[i].color = color.hex
+										setAttributes( { pricingItems: newPricingItems } )
+									} }
+									style={ { width: '100%' } }
+									disableAlpha
+								/>
+							: null }
+						{__('Button Text Color')}
+						<ColorPalette
+								disableCustomColors
+								value={pricingItem.button.color}
+								onChange={ (value) => {
+									let newPricingItems = [ ...attributes.pricingItems ]
+									newPricingItems[i].button.color = value
+									setAttributes( { pricingItems: newPricingItems } )
+								} }
+							/>
+							<a class="button-link blocks-color-palette__clear" onClick={ () => setAttributes( { customColor: ! attributes.customButtonTextColor } ) } type="button">
+								<div className="blocks-color-palette__item-wrapper blocks-color-palette__custom-color">
+									<span className="blocks-color-palette__custom-color-gradient" />
+								</div>
+							</a>
+							{ attributes.customButtonTextColor ?
+								<ChromePicker
+									style={{width: '100%'}}
+									color={ pricingItem.button.color }
+									onChangeComplete={ ( color ) => {
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].button.color = color.hex
 										setAttributes( { pricingItems: newPricingItems } )
 									} }
 									style={ { width: '100%' } }
@@ -354,20 +385,6 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 						</div>
 					)
 
-					// { attributes.pricingItems[i].planItems.length > 0 ?
-					// 	<button style={{display: 'inline-block'}} className="components-button components-icon-button"
-					// 	onClick={() => {
-					// 		let newPlanItems = [ ...attributes.pricingItems[i].planItems ]
-					// 		newPlanItems.pop()
-					// 		let newPricingItems = [ ...attributes.pricingItems ]
-					// 		newPricingItems[i].planItems = newPlanItems
-					// 		setAttributes( { pricingItems: newPricingItems } )
-					// 		document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length-1)).focus()
-					// 	}}>
-					// 	<span className="dashicons dashicons-minus"></span>
-					// 	</ button>
-					// 	: null }
-
 					const ButtonControls = (
 						<div className='button-box' style={{padding: '10px'}}>
 							<TextControl
@@ -409,7 +426,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 									className="pricingItem-controls-button"
 									contentClassName="pricingItem-controls"
 									renderToggle={ ( { isOpen, onToggle } ) => (
-										<button className="button is-fullwidth" style={{width: "100px", color: "white", backgroundColor: pricingItem.color}}  onClick={ onToggle }>
+										<button className="button is-fullwidth" style={{width: "100px", color: pricingItem.button.color, backgroundColor: pricingItem.color}}  onClick={ onToggle }>
 											{ pricingItem.button.text }
 										</button>
 									) }
@@ -511,8 +528,8 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 								{
 									pricingItem.button.hasButton ? (
 										pricingItem.button.openInNewTab ? (
-											<a href={pricingItem.button.link} target="_blank" rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
-										) : <a href={pricingItem.button.link}><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color}}>{pricingItem.button.text}</button></a>
+											<a href={pricingItem.button.link} target="_blank" rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}}>{pricingItem.button.text}</button></a>
+										) : <a href={pricingItem.button.link}><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}}>{pricingItem.button.text}</button></a>
 									) : null
 								}
 							</div>
