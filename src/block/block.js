@@ -9,9 +9,6 @@
 import './style.scss';
 import './editor.scss';
 
-import React from 'react';
-import { ChromePicker } from 'react-color';
-
 const { __ } = wp.i18n; // Import __() from wp.i18n
 const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
 const { Component } = wp.element;
@@ -197,62 +194,28 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 
 					const colorControlBox = (
 						<div className='color-control-box' style={{padding: '10px'}}>
-							{__('Main Color')}
-							<ColorPalette
-								disableCustomColors
-								value={pricingItem.color}
-								onChange={ (value) => {
-									let newPricingItems = [ ...attributes.pricingItems ]
-									newPricingItems[i].color = value
-									setAttributes( { pricingItems: newPricingItems } )
-								} }
-							/>
-							<a class="button-link blocks-color-palette__clear" onClick={ () => setAttributes( { customColor: ! attributes.customColor } ) } type="button">
-								<div className="blocks-color-palette__item-wrapper blocks-color-palette__custom-color">
-									<span className="blocks-color-palette__custom-color-gradient" />
-								</div>
-							</a>
-							{ attributes.customColor ?
-								<ChromePicker
-									style={{width: '100%'}}
-									color={ pricingItem.color }
-									onChangeComplete={ ( color ) => {
+							<div>
+								{__('Main Color')}
+								<ColorPalette
+									value={pricingItem.color}
+									onChange={ (value) => {
 										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].color = color.hex
+										newPricingItems[i].color = value
 										setAttributes( { pricingItems: newPricingItems } )
 									} }
-									style={ { width: '100%' } }
-									disableAlpha
 								/>
-							: null }
-						{__('Button Text Color')}
-						<ColorPalette
-								disableCustomColors
-								value={pricingItem.button.color}
-								onChange={ (value) => {
-									let newPricingItems = [ ...attributes.pricingItems ]
-									newPricingItems[i].button.color = value
-									setAttributes( { pricingItems: newPricingItems } )
-								} }
-							/>
-							<a class="button-link blocks-color-palette__clear" onClick={ () => setAttributes( { customColor: ! attributes.customButtonTextColor } ) } type="button">
-								<div className="blocks-color-palette__item-wrapper blocks-color-palette__custom-color">
-									<span className="blocks-color-palette__custom-color-gradient" />
-								</div>
-							</a>
-							{ attributes.customButtonTextColor ?
-								<ChromePicker
-									style={{width: '100%'}}
-									color={ pricingItem.button.color }
-									onChangeComplete={ ( color ) => {
+							</div>
+							<div>
+								{__('Button Text Color')}
+								<ColorPalette
+									value={pricingItem.button.color}
+									onChange={ (value) => {
 										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].button.color = color.hex
+										newPricingItems[i].button.color = value
 										setAttributes( { pricingItems: newPricingItems } )
 									} }
-									style={ { width: '100%' } }
-									disableAlpha
 								/>
-							: null }
+							</div>
 						</div>
 					)
 
@@ -320,7 +283,6 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 							const handleOnKeyDown = (e) => {
 								if (e.key == 'Enter') {
 									e.preventDefault()
-									console.log(attributes.pricingItems[i].planItems[j].text)
 									addPlanItem()
 								}
 								if (e.key == 'Backspace' && attributes.pricingItems[i].planItems[j].text == '') {
