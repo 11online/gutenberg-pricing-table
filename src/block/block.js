@@ -11,9 +11,9 @@ import './editor.scss';
 
 const { __ } = wp.i18n; // Import __() from wp.i18n
 const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
-const { Component } = wp.element;
 const { InspectorControls, ColorPalette, PlainText } = wp.editor;
 const { TextControl, SelectControl, Dropdown, ToggleControl, RangeControl } = wp.components;
+import CustomPopover from './custom-popover.js';
 
 /**
  * Register: aa Gutenberg Block.
@@ -173,49 +173,39 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 
 					const PricingItemControlButtons = isSelected && (
 						<div className="conrol-buttons-box" style={{display: 'flex', justifyContent: 'space-between'}}>
-							<Dropdown
-								className="pricingItem-controls-button"
-								contentClassName="pricingItem-controls"
-								position="bottom right"
-								renderToggle={ ( { isOpen, onToggle } ) => (
-									<button style={{display: "inline-block", padding: "none", textIndent: "none", color: pricingItem.color}} className="components-button components-icon-button" onClick={ onToggle } aria-expanded={ isOpen }>
-									<span className="dashicons dashicons-art"></span>
-									</button>
-								) }
-								renderContent={ () => colorControlBox }
+							<CustomPopover
+								button={<span style={{color: pricingItem.color}} className="dashicons dashicons-art"></span>}
+								content={
+									<div className='color-control-box' style={{padding: '10px'}}>
+										<div>
+											{__('Main Color')}
+											<ColorPalette
+												value={pricingItem.color}
+												onChange={ (value) => {
+													let newPricingItems = [ ...attributes.pricingItems ]
+													newPricingItems[i].color = value
+													setAttributes( { pricingItems: newPricingItems } )
+												} }
+											/>
+										</div>
+										<div>
+											{__('Button Text Color')}
+											<ColorPalette
+												value={pricingItem.button.color}
+												onChange={ (value) => {
+													let newPricingItems = [ ...attributes.pricingItems ]
+													newPricingItems[i].button.color = value
+													setAttributes( { pricingItems: newPricingItems } )
+												} }
+											/>
+										</div>
+									</div>}
 							/>
 							<button type="button" style={{display: 'inline-block', padding: "none", textIndent: "none"}} className="components-button components-icon-button" onClick={() => {
 								deletePricingItem()
 							}}>
 								<span className="dashicons dashicons-trash"></span>
 							</button>
-						</div>
-					)
-
-					const colorControlBox = (
-						<div className='color-control-box' style={{padding: '10px'}}>
-							<div>
-								{__('Main Color')}
-								<ColorPalette
-									value={pricingItem.color}
-									onChange={ (value) => {
-										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].color = value
-										setAttributes( { pricingItems: newPricingItems } )
-									} }
-								/>
-							</div>
-							<div>
-								{__('Button Text Color')}
-								<ColorPalette
-									value={pricingItem.button.color}
-									onChange={ (value) => {
-										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].button.color = value
-										setAttributes( { pricingItems: newPricingItems } )
-									} }
-								/>
-							</div>
 						</div>
 					)
 
@@ -299,7 +289,6 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 									document.getElementById("plan-item-"+i+(j+1)).focus()
 								},
 								bottom: () => {
-									console.log("plan-item-"+i+(attributes.pricingItems[i].planItems.length))
 									document.getElementById("plan-item-"+i+(attributes.pricingItems[i].planItems.length)).focus()
 								}
 							}
