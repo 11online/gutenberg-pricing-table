@@ -11,7 +11,7 @@ import './editor.scss';
 
 const { __ } = wp.i18n; // Import __() from wp.i18n
 const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
-const { InspectorControls, ColorPalette, PlainText } = wp.editor;
+const { InspectorControls, ColorPalette, PlainText, URLInputButton } = wp.editor;
 const { TextControl, SelectControl, Dropdown, ToggleControl, RangeControl } = wp.components;
 import CustomPopover from './custom-popover.js';
 
@@ -337,35 +337,15 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					)
 
 					const ButtonControls = (
-						<div className='button-box' style={{padding: '10px'}}>
-							<TextControl
-								label={ __( "Button Text:" ) }
-								value={pricingItem.button.text}
-								 onChange={ value => {
-									 let newPricingItems = [ ...attributes.pricingItems ]
-									 newPricingItems[i].button.text = value
-									 setAttributes( { pricingItems: newPricingItems } )
-								 } }
-								placeholder={ __("Button Text") }
-							/>
-							<TextControl
+						<div>
+							<URLInputButton
 								label={ __( "Link:" ) }
-								value={pricingItem.button.link}
-								 onChange={ value => {
+								url={pricingItem.button.link}
+								 onChange={ (url, post) => {
 									 let newPricingItems = [ ...attributes.pricingItems ]
-									 newPricingItems[i].button.link = value
+									 newPricingItems[i].button.link = url
 									 setAttributes( { pricingItems: newPricingItems } )
 								 } }
-								placeholder={ __("https://example.com") }
-							/>
-							<ToggleControl
-								label={ __("Open in New Tab?") }
-								checked={ !! pricingItem.button.openInNewTab }
-								onChange={ value => {
-									let newPricingItems = [ ...attributes.pricingItems ]
-									newPricingItems[i].button.openInNewTab = ! pricingItem.button.openInNewTab
-									setAttributes( { pricingItems: newPricingItems } )
-								} }
 							/>
 						</div>
 					)
@@ -373,16 +353,31 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					const renderButton = () => {
 						return (
 							<div>
-								<Dropdown
-									className="pricingItem-controls-button"
-									contentClassName="pricingItem-controls"
-									renderToggle={ ( { isOpen, onToggle } ) => (
-										<button className="button is-fullwidth" style={{width: "100px", color: pricingItem.button.color, backgroundColor: pricingItem.color}}  onClick={ onToggle }>
-											{ pricingItem.button.text }
-										</button>
-									) }
-									renderContent={ () => ButtonControls }
-								/>
+								{isSelected && <ToggleControl
+									label={ __("Open in New Tab?") }
+									checked={ !! pricingItem.button.openInNewTab }
+									onChange={ value => {
+										let newPricingItems = [ ...attributes.pricingItems ]
+										newPricingItems[i].button.openInNewTab = ! pricingItem.button.openInNewTab
+										setAttributes( { pricingItems: newPricingItems } )
+									} }
+								/>}
+								<button className="button is-fullwidth" style={{color: pricingItem.button.color, backgroundColor: pricingItem.color}}>
+									{ isSelected 
+										?
+											<PlainText
+												value={pricingItem.button.text}
+												 onChange={ value => {
+													 let newPricingItems = [ ...attributes.pricingItems ]
+													 newPricingItems[i].button.text = value
+													 setAttributes( { pricingItems: newPricingItems } )
+												 } }
+												style={{width: "100px", color: pricingItem.button.color, backgroundColor: pricingItem.color}}
+											/>
+										:
+											pricingItem.button.text }
+								</button>
+								{isSelected && ButtonControls}
 							</div>
 						)
 					}
