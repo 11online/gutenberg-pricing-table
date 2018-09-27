@@ -473,9 +473,8 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 							<div className="plan-footer">
 								{
 									pricingItem.button.hasButton ? (
-										pricingItem.button.openInNewTab ? (
-											<a href={pricingItem.button.link} target="_blank" rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}}>{pricingItem.button.text}</button></a>
-										) : <a href={pricingItem.button.link}><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}}>{pricingItem.button.text}</button></a>
+										 <a href={pricingItem.button.link} target={ pricingItem.button.openInNewTab ? "_blank" : null} rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}} onMouseEnter={"this.style.color='" + pricingItem.color + "'; this.style.backgroundColor='" + pricingItem.button.color + "';"} onMouseOut={"this.style.color='" + pricingItem.button.color + "'; this.style.backgroundColor='" + pricingItem.color + "';"}>{pricingItem.button.text}</button></a>
+										
 									) : null
 								}
 							</div>
