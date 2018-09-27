@@ -385,13 +385,13 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					return (
 						<div className={"pricing-plan "+i} key={i}>
 							{ PricingItemControlButtons }
-							<div className="plan-header">
+							<h2 className="plan-header">
 							{ renderDynamicWidthPlainText('title') }
-							</div>
-							<div className="plan-price">
+							</h2>
+							<h3 className="plan-price">
 								{ Price }
 								{ Per }
-							</div>
+							</h3>
 							<div className="plan-items">
 								{ PlanItems }
 							</div>
@@ -445,10 +445,10 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 				{ attributes.pricingItems.map( (pricingItem, i) => {
 					return (
 						<div className={"pricing-plan "+i} key={i}>
-							<div className="plan-header">
+							<h2 className="plan-header">
 								{pricingItem.title}
-							</div>
-							<div className="plan-price">
+							</h2>
+							<h3 className="plan-price">
 								<span className="plan-price-amount" style={{color: pricingItem.color}}>
 									<span className="plan-price-currency">
 										{attributes.currency}
@@ -458,7 +458,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 								{attributes.per ? (
 									"/"+attributes.per
 								): null }
-							</div>
+							</h3>
 							<div className="plan-items">
 								{
 									pricingItem.planItems.map( (planItem, j) => {
