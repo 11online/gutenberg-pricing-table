@@ -50,7 +50,6 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 						hasButton: true,
 						text: 'Choose',
 						link: '',
-						openInNewTab: false,
 						color: 'white',
 					},
 					color: '#444',
@@ -65,6 +64,10 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 			type: 'string',
 			deafult: '',
 		},
+		openInNewTab: {
+			type: 'boolean',
+			default: false
+		}
 	},
 
 	edit: function({ attributes, setAttributes, isSelected, className }) {
@@ -91,6 +94,13 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 						placeholder={ __("/") }
 					/>
 				</div>
+				<ToggleControl
+					label={ __("Open in New Tab?") }
+					checked={ !! attributes.openInNewTab }
+					onChange={ value => {
+						setAttributes( { openInNewTab: value } )
+					} }
+				/>
 			</InspectorControls>
 		)
 
@@ -113,7 +123,6 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 							hasButton: true,
 							text: newPricingItems.length ? newPricingItems[newPricingItems.length-1].button.text : 'Choose',
 							link: '',
-							openInNewTab: false,
 							color: 'white',
 						},
 						color: '#444',
@@ -353,15 +362,6 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					const renderButton = () => {
 						return (
 							<div>
-								{isSelected && <ToggleControl
-									label={ __("Open in New Tab?") }
-									checked={ !! pricingItem.button.openInNewTab }
-									onChange={ value => {
-										let newPricingItems = [ ...attributes.pricingItems ]
-										newPricingItems[i].button.openInNewTab = ! pricingItem.button.openInNewTab
-										setAttributes( { pricingItems: newPricingItems } )
-									} }
-								/>}
 								<button className="button is-fullwidth" style={{color: pricingItem.button.color, backgroundColor: pricingItem.color}}>
 									{ isSelected 
 										?
@@ -473,7 +473,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 							<div className="plan-footer">
 								{
 									pricingItem.button.hasButton ? (
-										 <a href={pricingItem.button.link} target={ pricingItem.button.openInNewTab ? "_blank" : null} rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}} onMouseEnter={"this.style.color='" + pricingItem.color + "'; this.style.backgroundColor='" + pricingItem.button.color + "';"} onMouseOut={"this.style.color='" + pricingItem.button.color + "'; this.style.backgroundColor='" + pricingItem.color + "';"}>{pricingItem.button.text}</button></a>
+										 <a href={pricingItem.button.link} target={ attributes.openInNewTab ? "_blank" : null} rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}} onMouseEnter={"this.style.color='" + pricingItem.color + "'; this.style.backgroundColor='" + pricingItem.button.color + "';"} onMouseOut={"this.style.color='" + pricingItem.button.color + "'; this.style.backgroundColor='" + pricingItem.color + "';"}>{pricingItem.button.text}</button></a>
 										
 									) : null
 								}
