@@ -95,7 +95,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					/>
 				</div>
 				<ToggleControl
-					label={ __("Open in New Tab?") }
+					label={ __("Open Buttons in New Tab?") }
 					checked={ !! attributes.openInNewTab }
 					onChange={ value => {
 						setAttributes( { openInNewTab: value } )
