@@ -67,6 +67,18 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 		openInNewTab: {
 			type: 'boolean',
 			default: false
+		},
+		borderRadius: {
+			type: 'number',
+			default: 0
+		},
+		paddingTopBottom: {
+			type: 'number',
+			default: 0
+		},
+		paddingRightLeft: {
+			type: 'number',
+			default: 0
 		}
 	},
 
@@ -99,6 +111,33 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					checked={ !! attributes.openInNewTab }
 					onChange={ value => {
 						setAttributes( { openInNewTab: value } )
+					} }
+				/>
+				<RangeControl
+					label={ __("Button Border Radius") }
+					value={ attributes.borderRadius }
+					min={0}
+					max={10}
+					onChange={ value => {
+						setAttributes( { borderRadius: value } )
+					} }
+				/>
+				<RangeControl
+					label={ __("Vertical Button Padding") }
+					value={ attributes.paddingTopBottom }
+					min={0}
+					max={30}
+					onChange={ value => {
+						setAttributes( { paddingTopBottom: value } )
+					} }
+				/>
+				<RangeControl
+					label={ __("Horizontal Button Padding") }
+					value={ attributes.paddingRightLeft }
+					min={0}
+					max={30}
+					onChange={ value => {
+						setAttributes( { paddingRightLeft: value } )
 					} }
 				/>
 			</InspectorControls>
@@ -362,7 +401,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 					const renderButton = () => {
 						return (
 							<div>
-								<button className="button is-fullwidth" style={{color: pricingItem.button.color, backgroundColor: pricingItem.color}}>
+								<button className="is-fullwidth" style={{color: pricingItem.button.color, backgroundColor: pricingItem.color, padding: attributes.paddingTopBottom + "px " + attributes.paddingRightLeft + "px", borderRadius: attributes.borderRadius}}>
 									{ isSelected 
 										?
 											<PlainText
@@ -473,7 +512,7 @@ registerBlockType( 'blockparty/block-gutenberg-pricing-table', {
 							<div className="plan-footer">
 								{
 									pricingItem.button.hasButton ? (
-										 <a href={pricingItem.button.link} target={ attributes.openInNewTab ? "_blank" : null} rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color}} onMouseEnter={"this.style.color='" + pricingItem.color + "'; this.style.backgroundColor='" + pricingItem.button.color + "';"} onMouseOut={"this.style.color='" + pricingItem.button.color + "'; this.style.backgroundColor='" + pricingItem.color + "';"}>{pricingItem.button.text}</button></a>
+										 <a href={pricingItem.button.link} target={ attributes.openInNewTab ? "_blank" : null} rel="noopener noreferrer"><button className="button is-fullwidth" style={{backgroundColor: pricingItem.color, color: pricingItem.button.color, padding: attributes.paddingTopBottom + "px " + attributes.paddingRightLeft + "px", borderRadius: attributes.borderRadius}} onMouseEnter={"this.style.color='" + pricingItem.color + "'; this.style.backgroundColor='" + pricingItem.button.color + "';"} onMouseOut={"this.style.color='" + pricingItem.button.color + "'; this.style.backgroundColor='" + pricingItem.color + "';"}>{pricingItem.button.text}</button></a>
 										
 									) : null
 								}
