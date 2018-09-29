@@ -12,7 +12,7 @@ import './editor.scss';
 const { __ } = wp.i18n; // Import __() from wp.i18n
 const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
 const { InspectorControls, ColorPalette, PlainText, URLInputButton } = wp.editor;
-const { TextControl, SelectControl, Dropdown, ToggleControl, RangeControl } = wp.components;
+const { TextControl, SelectControl, ToggleControl, RangeControl } = wp.components;
 import CustomPopover from './custom-popover.js';
 
 /**
