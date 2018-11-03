@@ -3,7 +3,7 @@
  * Plugin Name: Pricing Table Block	
  * Plugin URI: https://11online.us/	
  * Description: Gutenberg Pricing Block — is a Gutenberg plugin created via create-guten-block.	
- * Author: iwpeifer	
+ * Author: iwpeifer, ericdebelak	
  * Author URI: https://11online.us/	
  * Version: 1.0.0	
  * License: GPL2+	
